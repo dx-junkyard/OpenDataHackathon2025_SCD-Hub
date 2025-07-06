@@ -1,0 +1,30 @@
+version: "3.9"
+services:
+  redis:
+    image: redis:7-alpine
+  scd_hub:
+    build: ./apps/scd_hub_server
+    volumes:
+      - ./data:/data
+  minihub:
+    build: ./apps/minihub
+    volumes:
+      - ./apps/minihub/resources:/resources
+  orchestrator:
+    build: ./apps/orchestrator
+    env_file: .env
+    depends_on:
+      - scd_hub
+      - minihub
+      - redis
+    ports:
+      - "8000:8000"
+  ingestor:
+    build: ./apps/ingestor
+    volumes:
+      - ./data:/data
+    entrypoint: ["python","/code/ingest.py"]
+  line_bot:
+    build: ./apps/bots/line_bot
+  slack_bot:
+    build: ./apps/bots/slack_bot

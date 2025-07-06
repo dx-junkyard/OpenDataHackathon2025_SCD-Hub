@@ -1,0 +1,10 @@
+{
+ "resources": [
+  {"id": "bus_ridership", "version": "v202507", "schema": "data/schemas/bus_ridership.json", "location": "file://data/parquet/bus_ridership_202507.parquet"},
+  {"id": "feedback", "version": "v1", "schema": "data/schemas/feedback.json", "location": "file://apps/minihub/resources/feedback.jsonl"}
+ ],
+ "tools": [
+  {"name": "createPoster", "argsSchema": {"type": "object", "properties": {"route": {"type": "string"}}, "required": ["route"]}},
+  {"name": "pushLINE", "argsSchema": {"type": "object", "properties": {"message": {"type": "string"}}, "required": ["message"]}}
+ ]
+}
