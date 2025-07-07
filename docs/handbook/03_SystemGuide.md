@@ -1,67 +1,80 @@
-# 03 SystemGuide – 技術構成と実装方針  
+# 03 SystemGuide – 技術構成と実装方針  
 *Updated: 2025-07-07*
 
-## 1. アーキテクチャ概要
+## 0. ドキュメントの目的
+本書は **「渋谷ハチ公バス × 町会 AI EBPM MVP」** の技術仕様書です。  
+エンジニアがコードを読み／書き始める時に **「どのサービスが何を担い、どこを変更すればよいか」** を 1 冊で把握できるように記載しています。
+
+## 1. 全体アーキテクチャ
+```mermaid
+flowchart TB
+  subgraph Frontend
+    LINE["LINE OA Bot"] -- Webhook --> MiniHub
+    Slack["Slack Bot"] -- Webhook --> Orchestrator
+  end
+  subgraph MCP_Servers
+    MiniHub["Mini‑Hub\n(町会 MCP)"]
+    SCDHub["SCD Hub\n(市データ MCP)"]
+  end
+  subgraph Core
+    Orchestrator["AI Orchestrator\nFastAPI + LangChain"]
+    Redis[(Redis Streams)]
+  end
+  subgraph Data
+    DuckDB["DuckDB (Parquet)"]
+  end
+  Ingestor["ETL Ingestor"]
+  MiniHub -- JSON‑RPC --> Orchestrator
+  Orchestrator -- JSON‑RPC --> SCDHub
+  Orchestrator -- pub/sub --> Redis
+  Ingestor --> DuckDB
+  DuckDB --> SCDHub
 ```
-LINE OA  ←→  MiniHub(MCP)  ←→  Orchestrator(FastAPI)  ←→  SCD Hub(MCP)  ←→  DuckDB
-Slack    ←──────────────────────────────┘
-```
-- **データ基盤**: DuckDB (+ Parquet)  … 軽量・依存ゼロ  
-- **連携プロトコル**: Model Context Protocol (MCP) … Resource/Tool を標準公開  
-- **メッセージング**: Redis Streams … 軽量 Pub/Sub  
-- **LLM**: OpenAI GPT-4o (fallback: local Llama3 via Ollama)
 
 ## 2. コンポーネント詳細
-| Service | 主ライブラリ | ポート | 備考 |
-|---------|-------------|-------|------|
-| orchestrator | FastAPI, LangChain | 8000 | `/healthz`, `/events` |
-| scd_hub_server | Flask, duckdb, Pillow | 7000 | `/mcp/resources`, `/mcp/tools` |
-| minihub | Flask | 7100 | 町会フィードバック保存 |
-| ingestor | pandas, duckdb | – | cron 実行 |
-| redis | Streams | 6379 | – |
-| line_bot | line-bot-sdk | 9000 | – |
-| slack_bot | slack_bolt | 9100 | – |
+| ID | サービス | 主責務 | 主 I/O |
+|----|----------|--------|--------|
+| A | **Ingestor** | PowerBI CSV → Parquet → DuckDB、Manifest version 更新 | CSV / Parquet |
+| B | **SCD Hub** | MCP Resource `bus_ridership`, Tool `createPoster` | JSON‑RPC |
+| C | **Mini‑Hub** | MCP Resource `feedback`, Tool `pushLINE` | JSON‑RPC / LINE |
+| D | **Orchestrator** | TrendWatch / HypoDraft / TestRunner, REST API | Redis / JSON‑RPC |
+| E | **LINE Bot** | 投稿 → MiniHub、Push 通知 | LINE API |
+| F | **Slack Bot** | アラート & Slash Cmd | Slack API |
+| G | **Redis Streams** | イベントバス | Streams |
+| H | **DuckDB** | `ridership` table | Parquet |
 
-## 3. データフロー
-1. **ETL** – PowerBI CSV DL → Parquet 変換 → DuckDB テーブル更新。  
-2. **Resource 更新** – Ingestor が MCP manifest の `bus_ridership` version を更新。  
-3. **異常検知** – Orchestrator TrendWatch が前月比 -20 % を捕捉し Redis publish。  
-4. **通知** – Slack Bot が行政へアラート、MiniHub が LINE へ招集。  
-5. **施策実行** – Orchestrator → `createPoster()` → 町会掲示 & `pushLINE()`。  
-6. **効果測定** – 翌月 ETL 反映後 Orchestrator が before/after レポートを生成。
+## 3. データモデル
+### 3.1 ridership
+カラム: `date` | `route_id` | `route_name` | `passengers`
 
-## 4. フォルダ構成（抜粋）
+### 3.2 feedback.jsonl
+フィールド: `timestamp` | `user_id` | `route_id` | `text` | `tags[]`
+
+## 4. ワークフロー
+1. ETL → `ETL_DONE`  
+2. TrendWatch → `ANOMALY_DETECTED`  
+3. Slack Alert / LINE 招集  
+4. 住民投稿 → `NEW_FEEDBACK`  
+5. HypoDraft 仮説生成  
+6. TestRunner 施策実行  
+7. 翌月 効果測定  
+
+## 5. フォルダ構成
 ```
-docs/
-  handbook/
-    01_ProblemBook.md
-    02_ServiceConcept.md
-    03_SystemGuide.md
-  architecture/
-    overview.drawio
-apps/
-  orchestrator/  scd_hub_server/  minihub/  ingestor/  bots/
-data/
-  parquet/   duckdb/   schemas/
-infrastructure/
-  docker-compose.yaml
+docs/handbook/03_SystemGuide.md
+apps/{orchestrator, scd_hub_server, minihub, ingestor, bots}
+data/{parquet, duckdb, schemas}
+infrastructure/docker-compose.yaml
 ```
 
-## 5. 開発・実行手順
+## 6. 開発手順
 ```bash
-git clone <repo>
-cd project-root
 docker compose up -d
-curl localhost:8000/healthz   # => 200 OK
+curl localhost:8000/healthz
 ```
 
-## 6. 依存とバージョン
-- Python 3.11  
-- duckdb >= 0.10  
-- Redis 7-alpine  
-- OpenAI >= 1.23.0  
-- LangChain 0.2.x  
+## 7. 今後の拡張
+- Redis → Kafka  
+- 事故ホットスポット Resource 追加  
+- GKE へ移行
 
----
-
-_この SystemGuide はエンジニア用の実装ハンドブックとして維持する。_
