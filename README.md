@@ -70,6 +70,19 @@ docker compose --profile sprout up -d
 
 ---
 
+## 🧭 キーワード定義
+
+- **コミュニティ・オーケストレーション（Community Orchestration）**  
+  多様なコミュニティを **調和して連携させる** 仕組みを指す言葉で、  
+  “harmonious organization” のニュアンスを含みます :contentReference[oaicite:5]{index=5}。
+
+- **AI orchestration**  
+  コンポーネント間での相互連携を管理することで、各AIエージェント・ツール・データが  
+  **統合されたひとつの流れとして機能する仕組み**。  
+  “Orchestra の指揮者のように役割を調整し、システム全体をハーモナイズする”という説明が典型的です :contentReference[oaicite:6]{index=6}。
+
+---
+
 ## 🤝 貢献方法
 1. Issue を立てて議論  
 2. Fork → ブランチ作成 (`sprout/feature-xxx`)  
