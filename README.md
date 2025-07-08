@@ -20,7 +20,7 @@
 
 ## 🌐 バックグラウンド
 - **東京都知事杯 Open Data Hackathon 2025**  
-  - 渋谷区課題: *「多様な主体の参画を促すデータ利活用アイデア」*  
+  - [渋谷区課題](https://odhackathon.metro.tokyo.lg.jp/issues/) : *「多様な主体の参画を促すデータ利活用アイデア」*  
 - **渋谷 CITY DASHBOARD** のオープンデータを起点に、行政・住民・企業が共創するモデル構築を企図。
 
 ---
@@ -29,8 +29,8 @@
 
 | ブランチ | MVP テーマ | ステータス |
 |----------|-----------|------------|
-| `hachiko-bus` | ハチ公バス乗客数回復 | 🛠 実装中 |
-| `sprout` | 子育て支援 (保育・相談) | 🛠 実装中 |
+| [hachiko-bus](https://github.com/dx-junkyard/OpenDataHackathon2025_SCD-Hub/tree/hachiko-bus) | ハチ公バス乗客数回復 | 🛠 実装中 |
+| [sprout](https://github.com/dx-junkyard/OpenDataHackathon2025_SCD-Hub/tree/sprout) | 子育て支援 (保育・相談) | 🛠 実装中 |
 
 ### MVP 共通フレーム
 - **データ基盤**: DuckDB + Parquet  
