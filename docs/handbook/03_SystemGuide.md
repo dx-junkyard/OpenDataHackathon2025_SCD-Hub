@@ -63,14 +63,89 @@ flowchart TB
 | 4 | FAQ 生成 | FAQBuilder → markdown FAQ ＋ LINE Push |
 | 5 | 効果測定 | 翌月 ETL → 未回答率算出 |
 
+
 ## 5. フォルダ構成差分
+```text
+project-root/
+├─ apps/
+│  ├─ orchestrator/
+│  │   ├─ src/
+│  │   │   ├─ api.py
+│  │   │   └─ agents/
+│  │   │       ├─ trend_watch.py
+│  │   │       ├─ hypo_draft.py
+│  │   │       ├─ test_runner.py
+│  │   │       ├─ need_watch.py
+│  │   │       └─ faq_builder.py
+│  │   ├─ prompts/
+│  │   ├─ workflows/
+│  │   └─ Dockerfile
+│  ├─ scd_hub_server/
+│  │   ├─ src/
+│  │   │   ├─ mcp_server.py
+│  │   │   └─ tools/
+│  │   │       ├─ poster.py
+│  │   │       └─ generate_faq.py
+│  │   └─ Dockerfile
+│  ├─ minihub/
+│  │   ├─ src/
+│  │   │   ├─ mcp_server.py
+│  │   │   └─ tools/
+│  │   │       └─ push_line_kids.py
+│  │   ├─ resources/
+│  │   │   └─ night_chatlog.jsonl
+│  │   └─ Dockerfile
+│  ├─ ingestor/
+│  │   ├─ src/
+│  │   │   └─ ingest.py
+│  │   └─ Dockerfile
+│  └─ bots/
+│      ├─ line_bot/
+│      │   ├─ src/
+│      │   │   └─ main.py
+│      │   └─ Dockerfile
+│      └─ slack_bot/
+│          ├─ src/
+│          │   └─ main.py
+│          └─ Dockerfile
+├─ data/
+│  ├─ parquet/
+│  │   ├─ bus_ridership_*.parquet
+│  │   ├─ waiting_children_*.parquet
+│  │   └─ playground_defect_*.parquet
+│  ├─ duckdb/
+│  │   └─ shibuya.db
+│  └─ schemas/
+│      ├─ bus_ridership.json
+│      ├─ waiting.json
+│      ├─ chatlog.json
+│      └─ playground_defect.json
+├─ docs/
+│  ├─ handbook/
+│  │   ├─ 01_ProblemBook_kosodate.md
+│  │   ├─ 02_ServiceConcept_kosodate.md
+│  │   └─ 03_SystemGuide_kosodate.md
+│  ├─ mcp/
+│  │   └─ manifest.json
+│  └─ architecture/
+│      └─ overview.drawio
+├─ infrastructure/
+│  ├─ docker-compose.yaml
+│  └─ terraform/
+├─ tests/
+│  └─ ...
+├─ scripts/
+│  └─ smoke_test.sh
+└─ README.md
+
 ```
-apps/
-  scd_hub_server/tools/generate_faq.py
-data/
-  schemas/waiting.json
-  schemas/chatlog.json
-```
+
+> **ポイント**  
+> - `apps/orchestrator/src/agents/` に子育て専用エージェント `need_watch.py` と `faq_builder.py` を追加。  
+> - `apps/scd_hub_server/tools/generate_faq.py` が `generateFAQ()` MCP ツール。  
+> - `data/parquet` に子育て専用 Parquet を格納。  
+> - `docs/mcp/manifest.json` に Resources/Tools を一元管理。  
+
 
 ## 6. 開発・起動手順
 ```bash
