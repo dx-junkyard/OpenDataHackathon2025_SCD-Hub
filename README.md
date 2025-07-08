@@ -21,3 +21,8 @@ Which should return:
 ```json
 {"status": "ok"}
 ```
+
+## Configuration
+
+Copy `.env.example` to `.env` and set `WAITING_CHILDREN_URL` to the CSV download
+URL. You can also override `PARQUET_DIR` and `DUCKDB_PATH` if necessary.
