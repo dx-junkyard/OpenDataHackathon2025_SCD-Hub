@@ -29,8 +29,8 @@
 
 | ブランチ | MVP テーマ | ステータス |
 |----------|-----------|------------|
-| [hachiko-bus](https://github.com/dx-junkyard/OpenDataHackathon2025_SCD-Hub/tree/hachiko-bus) | ハチ公バス乗客数回復 | 🛠 実装中 |
-| [sprout](https://github.com/dx-junkyard/OpenDataHackathon2025_SCD-Hub/tree/sprout) | 子育て支援 (保育・相談) | 🛠 実装中 |
+| [hachiko-bus](https://github.com/dx-junkyard/OpenDataHackathon2025_SCD-Hub/tree/hachiko-bus) | ハチ公バス乗客数回復 | 🔍 検討中 |
+| [sprout](https://github.com/dx-junkyard/OpenDataHackathon2025_SCD-Hub/tree/sprout) | 子育て支援 (保育・相談) | 🔍 検討中 |
 
 ### MVP 共通フレーム
 - **データ基盤**: DuckDB + Parquet  
