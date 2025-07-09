@@ -1,166 +1,59 @@
-# 03_SystemGuide（子育て版）
-*更新日: 2025-07-08*
+# 03_SystemGuide_kenko_sports.md
 
-## 1. システム全体像
+## システム全体構成（MVP）
+
 ```mermaid
-flowchart TB
-  subgraph Front
-    LINE["PTA LINE Bot"] -- Webhook --> MiniHub
-    Slack["Slack Bot"] -- Webhook --> Orchestrator
+graph LR
+  subgraph User
+    A1[地域住民]
+    A2[LINE Bot]
   end
-  subgraph Data
-    DuckDB["DuckDB + Parquet"]
-    Ingestor["ETL Ingestor"]
+
+  subgraph Orchestrator
+    O1[課題検出Agent]
+    O2[マッチングAgent]
+    O3[テンプレート提案Agent]
   end
-  subgraph MCP
-    MiniHub["Mini‑Hub (PTA)"]
-    SCDHub["SCD Hub (区データ)"]
+
+  subgraph DataLayer
+    D1[Parquet/CSV]
+    D2[DuckDB]
+    D3[Shibuya API]
   end
-  Orchestrator["AI Orchestrator (FastAPI + LangChain)"]
-  Redis[(Redis Streams)]
-  Ingestor --> DuckDB --> SCDHub
-  MiniHub -- JSON‑RPC --> Orchestrator
-  Orchestrator -- JSON‑RPC --> SCDHub
-  Orchestrator -- pub/sub --> Redis
+
+  A1-- 課題共有 -->A2-- Query -->O1
+  O1-- 問題カテゴリ -->O2-- 候補提案 -->A2
+  O3-- イベント・提案 -->A2
+  O1-- データ参照 -->D2
+  O2-- 地域資源取得 -->D3
 ```
 
-## 2. 追加・変更点
-| コンポーネント | 機能追加内容 |
-|---------------|-------------|
-| **Resources** | `waiting_children`, `night_chatlog`, `playground_defect` |
-| **Tools** | `pushLineKids(message)`, `generateFAQ()` |
-| **Agents** | *NeedWatch*（待機児童ピーク検知）<br>*FAQBuilder*（相談ログ→FAQ） |
-| **Schemas** | `waiting.json`, `chatlog.jsonl` |
+---
 
-### 2.1 MCP 定義例
-```jsonc
-{
-  "id":"waiting_children",
-  "version":"v202507",
-  "schema":"data/schemas/waiting.json",
-  "location":"file://data/parquet/waiting_children_202507.parquet"
-}
+## モジュール構成
+
+| モジュール | 説明 |
+|------------|------|
+| **課題検出 Agent** | Shibuya Dashboard の統計やユーザーの投稿内容から運動・健康の地域課題を抽出 |
+| **マッチング Agent** | 居住地・時間帯・年齢などから運動施設やコミュニティ候補を選定 |
+| **テンプレート提案 Agent** | イベント開催テンプレートやLINE通知文などを地域ごとに最適化生成 |
+| **Data Layer** | DuckDB による軽量 DB・CSV or Parquet による統計の格納・加工 |
+| **コミュニケーション層** | LINE Messaging API or Web UI で住民と応答・フィードバック収集 |
+
+---
+
+## フォルダ構成（MVP）
+
 ```
-
-## 3. データモデル
-### 3.1 waiting_children.parquet
-`year_month` / `age_group` / `waiting` / `capacity`
-
-### 3.2 night_chatlog.jsonl
-```json
-{"timestamp":"2025-07-01T23:10:00Z",
-  "user_id":"Uxxx",
-  "msg":"申請方法が分かりません",
-  "status":"unanswered"}
-```
-
-## 4. ワークフロー詳細
-| 手順 | イベント | 実処理 |
-|------|---------|--------|
-| 1 | ETL 完了 (`ETL_DONE`) | Ingestor → waiting_children 更新 |
-| 2 | ピーク検知 (`PEAK_DETECTED`) | NeedWatch → Slack/LINE 通知 |
-| 3 | 相談投稿 (`NEW_CHATLOG`) | LINE Bot → MiniHub JSONL append |
-| 4 | FAQ 生成 | FAQBuilder → markdown FAQ ＋ LINE Push |
-| 5 | 効果測定 | 翌月 ETL → 未回答率算出 |
-
-
-## 5. フォルダ構成差分
-```text
 project-root/
-├─ apps/
-│  ├─ orchestrator/
-│  │   ├─ src/
-│  │   │   ├─ api.py
-│  │   │   └─ agents/
-│  │   │       ├─ trend_watch.py
-│  │   │       ├─ hypo_draft.py
-│  │   │       ├─ test_runner.py
-│  │   │       ├─ need_watch.py
-│  │   │       └─ faq_builder.py
-│  │   ├─ prompts/
-│  │   ├─ workflows/
-│  │   └─ Dockerfile
-│  ├─ scd_hub_server/
-│  │   ├─ src/
-│  │   │   ├─ mcp_server.py
-│  │   │   └─ tools/
-│  │   │       ├─ poster.py
-│  │   │       └─ generate_faq.py
-│  │   └─ Dockerfile
-│  ├─ minihub/
-│  │   ├─ src/
-│  │   │   ├─ mcp_server.py
-│  │   │   └─ tools/
-│  │   │       └─ push_line_kids.py
-│  │   ├─ resources/
-│  │   │   └─ night_chatlog.jsonl
-│  │   └─ Dockerfile
-│  ├─ ingestor/
-│  │   ├─ src/
-│  │   │   └─ ingest.py
-│  │   └─ Dockerfile
-│  └─ bots/
-│      ├─ line_bot/
-│      │   ├─ src/
-│      │   │   └─ main.py
-│      │   └─ Dockerfile
-│      └─ slack_bot/
-│          ├─ src/
-│          │   └─ main.py
-│          └─ Dockerfile
-├─ data/
-│  ├─ parquet/
-│  │   ├─ bus_ridership_*.parquet
-│  │   ├─ waiting_children_*.parquet
-│  │   └─ playground_defect_*.parquet
-│  ├─ duckdb/
-│  │   └─ shibuya.db
-│  └─ schemas/
-│      ├─ bus_ridership.json
-│      ├─ waiting.json
-│      ├─ chatlog.json
-│      └─ playground_defect.json
-├─ docs/
-│  ├─ handbook/
-│  │   ├─ 01_ProblemBook_kosodate.md
-│  │   ├─ 02_ServiceConcept_kosodate.md
-│  │   └─ 03_SystemGuide_kosodate.md
-│  ├─ mcp/
-│  │   └─ manifest.json
-│  └─ architecture/
-│      └─ overview.drawio
-├─ infrastructure/
-│  ├─ docker-compose.yaml
-│  └─ terraform/
-├─ tests/
-│  └─ ...
-├─ scripts/
-│  └─ smoke_test.sh
-└─ README.md
-
+├── apps/
+│   ├── analyzer/         # 課題検出Agent
+│   ├── matcher/          # 地域マッチングAgent
+│   └── notifier/         # LINE通知・生成系
+├── data/
+│   ├── dashboard.parquet # 渋谷の運動・健康データ
+│   └── facility.csv      # 地域の運動施設・イベント
+├── docs/
+│   └── handbook/         # このファイル群
+└── docker-compose.yml
 ```
-
-> **ポイント**  
-> - `apps/orchestrator/src/agents/` に子育て専用エージェント `need_watch.py` と `faq_builder.py` を追加。  
-> - `apps/scd_hub_server/tools/generate_faq.py` が `generateFAQ()` MCP ツール。  
-> - `data/parquet` に子育て専用 Parquet を格納。  
-> - `docs/mcp/manifest.json` に Resources/Tools を一元管理。  
-
-
-## 6. 開発・起動手順
-```bash
-# 依存インストール
-poetry install
-
-# 起動
-docker compose -f infrastructure/docker-compose.yaml --profile kosodate up -d
-
-# ヘルスチェック
-curl http://localhost:8000/healthz  # 200 OK
-```
-
-## 7. 拡張予定
-- Redis → Kafka 置換でスケール対応  
-- `child_accident_hotspots` リソース追加  
-- GKE / Cloud Run へ本番デプロイ  
-
