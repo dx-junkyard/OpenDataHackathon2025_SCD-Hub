@@ -1,5 +1,5 @@
 # AI‑Driven Community Orchestration  
-*最終更新: 2025-07-08*
+*最終更新: 2025-07-10*
 
 ## 🛰️ プロジェクト概要
 本リポジトリは、**「AI を活用したコミュニティ・オーケストレーションの実現」** を目的とした実証プラットフォームです。  
@@ -21,7 +21,7 @@
 ## 🌐 バックグラウンド
 - **東京都知事杯 Open Data Hackathon 2025**  
   - [渋谷区課題](https://odhackathon.metro.tokyo.lg.jp/issues/) : *「多様な主体の参画を促すデータ利活用アイデア」*  
-- **渋谷 CITY DASHBOARD** のオープンデータを起点に、行政・住民・企業が共創するモデル構築を企図。
+- **[SHIBUYA CITY DASHBOARD](https://www.city.shibuya.tokyo.jp/contents/kusei/shibuya-data/)** のオープンデータを起点に、行政・住民・企業が共創するモデル構築を企図。
 
 ---
 
@@ -31,6 +31,7 @@
 |----------|-----------|------------|
 | [hachiko-bus](https://github.com/dx-junkyard/OpenDataHackathon2025_SCD-Hub/tree/hachiko-bus) | ハチ公バス乗客数回復 | 🔍 検討中 |
 | [sprout](https://github.com/dx-junkyard/OpenDataHackathon2025_SCD-Hub/tree/sprout) | 子育て支援 (保育・相談) | 🔍 検討中 |
+| [active-live](https://github.com/dx-junkyard/OpenDataHackathon2025_SCD-Hub/tree/active-life) | 健康・スポーツ | 🔍 検討中 |
 
 ### MVP 共通フレーム
 - **データ基盤**: DuckDB + Parquet  
