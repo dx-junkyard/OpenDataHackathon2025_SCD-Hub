@@ -79,25 +79,17 @@ project-root/
 
 | ブランチ | テーマ | ステータス |
 |----------|------------------|------------|
-| `main`        | ハチ公バス            | ✅ PoC 完了 |
+| `hachiko-bus` | ハチ公バス            | 🔍 検討中    |
 | `sprout`      | 子育て支援            | 🔍 検討中    |
 | `active-life` | 健康・スポーツ支援    | 🔍 検討中    |
 
 ---
 
-## 7️⃣ 貢献方法
-
-1. Issue / Discussion で提案  
-2. `feature/<topic>` ブランチを切って PR  
-3. `pytest && ruff && mypy` がグリーン必須
-
----
-
-## 8️⃣ 用語集
-
+## 7️⃣ 用語集
 - **判断軸 (Ruleset)** … 「条件→すべき行動」を定義した YAML / JSON  
 - **弱い紐帯** … 知人レベルの緩い関係が情報を橋渡しする Granovetter 理論  
 - **MCP (Model Context Protocol)** … 外部データ・ツールを LLM が安全に呼ぶ仕様  
+
 
 ---
 
