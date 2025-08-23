@@ -10,10 +10,10 @@ cd OpenDataHackathon2025_SCD-Hub
 docker compose up -d
 ```
 
-After the containers start you can verify the orchestrator is running:
+After the containers start you can verify the mock API is running:
 
 ```bash
-curl http://localhost:8000/healthz
+curl http://localhost:8000/health
 ```
 
 Which should return:
