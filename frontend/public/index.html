@@ -167,15 +167,11 @@
     <section id="view-card" style="display:none">
       <div class="row">
         <div class="card">
-          <h3>[課題カード] 病児保育の空きが見えない</h3>
-          <p class="muted">KPI: 当日対応率 <b id="kpiNow">55%</b> / 目標 80%</p>
-          <div class="kpi-bar"><b id="kpiBar" style="width:55%"></b></div>
+          <h3 id="cardTitle"></h3>
+          <p class="muted">KPI: 当日対応率 <b id="kpiNow"></b> / 目標 <span id="kpiGoal">80</span>%</p>
+          <div class="kpi-bar"><b id="kpiBar" style="width:0"></b></div>
           <div class="space"></div>
-          <div class="chips">
-            <span class="chip">状態: 具体化中</span>
-            <span class="chip">タグ: 子育て・医療</span>
-            <span class="chip">鮮度: 本日更新</span>
-          </div>
+          <div class="chips" id="cardChips"></div>
           <div class="space"></div>
           <div id="cardThreads"></div>
           <div class="flex">
@@ -299,14 +295,12 @@ tabs.forEach(t=>{
 });
 
 /* ========== 1) News DM (news list + DM modal) ========== */
-// モックデータ（複数ニュース）
-const NEWS = [
-  {id:1, title:"病児保育の枠拡充を検討", summary:"当日対応率の改善を目標に枠拡充を検討。詳細は来月発表。", cat:"子育て", tags:["病児保育","子育て"], ts:"2025-08-18T10:00:00", unread:true, cards:1, comments:6},
-  {id:2, title:"夜間学童の試行案内", summary:"18–21時の学童保育の試行を開始。対象エリアは渋谷駅周辺。", cat:"教育", tags:["学童","放課後"], ts:"2025-08-20T09:00:00", unread:false, cards:0, comments:2},
-  {id:3, title:"地域防災訓練の見直し", summary:"高層マンション向け避難動線の再設計を検討中。", cat:"防災", tags:["避難","訓練"], ts:"2025-08-17T13:00:00", unread:true, cards:0, comments:4},
-  {id:4, title:"緑道と公共空間の利活用", summary:"再開発で創出された公共空間にイベントルール案。", cat:"都市開発", tags:["緑道","公共空間"], ts:"2025-08-15T18:00:00", unread:false, cards:2, comments:8},
-  {id:5, title:"高齢者フレイル対策の強化", summary:"見守りとデータ連携の強化で早期介入モデルを試行。", cat:"福祉", tags:["フレイル","見守り"], ts:"2025-08-22T08:00:00", unread:true, cards:0, comments:1},
-];
+let NEWS = [];
+async function loadNews(){
+  const res = await fetch('http://localhost:8000/news');
+  NEWS = await res.json();
+  renderNews();
+}
 
 // ユーティリティ
 const fmt = (iso)=> {
@@ -367,7 +361,7 @@ function renderNews(){
 
 [q,cat,unreadOnly].forEach(el=>el.addEventListener('input', renderNews));
 clearBtn.addEventListener('click', ()=>{ q.value=''; cat.value=''; unreadOnly.checked=false; renderNews(); });
-renderNews();
+loadNews();
 
 // DM機能
 const backDM = document.getElementById('backDM');
@@ -401,20 +395,18 @@ grid.addEventListener('click', (e)=>{
   } else if(commId){
     // 一時コミュ機能
     const n = NEWS.find(x=>x.id===Number(commId));
-    if(!threads[commId]){
-      threads[commId] = [
-        {type:'chat', text:'同じ状況の家庭が多い印象です', by:'住民'},
-        {type:'candidate', text:'夜間帯の空き枠をカレンダーで見たい', by:'NPO'}
-      ];
-    }
-    // 一時コミュタブに切り替え
-    tabs.forEach(x=>x.classList.remove('active'));
-    document.querySelector('[data-view="newsroom"]').classList.add('active');
-    Object.keys(views).forEach(k=>views[k].style.display = (k==='newsroom'?'block':'none'));
-    
-    // 一時コミュの内容を更新
-    document.getElementById('view-newsroom').querySelector('h3').textContent = `一時コミュ：${n.title}`;
-    renderNewsroom();
+    currentNewsId = Number(commId);
+    fetch(`http://localhost:8000/news/${commId}/threads`).then(r=>r.json()).then(data=>{
+      threads[commId] = data;
+      // 一時コミュタブに切り替え
+      tabs.forEach(x=>x.classList.remove('active'));
+      document.querySelector('[data-view="newsroom"]').classList.add('active');
+      Object.keys(views).forEach(k=>views[k].style.display = (k==='newsroom'?'block':'none'));
+
+      // 一時コミュの内容を更新
+      document.getElementById('view-newsroom').querySelector('h3').textContent = `一時コミュ：${n.title}`;
+      renderNewsroom();
+    });
   }
 });
 
@@ -438,6 +430,7 @@ document.getElementById('dmSend').addEventListener('click', ()=>{
 
 // 一時コミュ機能（ニュースリストから）
 let threads = {}; // newsId -> items
+let currentNewsId = null;
 
 /* ========== 2) News Temporary Community ========== */
 const newsThreads = document.getElementById('newsThreads');
@@ -446,18 +439,11 @@ const newsType = document.getElementById('newsType');
 const newsAdd = document.getElementById('newsAdd');
 const newsSummaryNote = document.getElementById('newsSummaryNote');
 
-let newsItems = [
-  {type:'chat', title:'延長枠が埋まりやすい感じします', author:'住民C'},
-  {type:'candidate', title:'夜間帯の空き枠をカレンダー化したい', author:'NPO'},
-];
-
 function renderNewsroom(){
   if (!newsThreads) return; // 安全チェック
   newsThreads.innerHTML='';
-  const currentThreads = threads[Object.keys(threads).find(k => 
-    document.getElementById('view-newsroom').querySelector('h3').textContent.includes(NEWS.find(n => n.id === Number(k))?.title)
-  )] || newsItems;
-  
+  const currentThreads = threads[currentNewsId] || [];
+
   currentThreads.forEach(it=>{
     const el = document.createElement('div');
     el.className = 'thread';
@@ -470,19 +456,11 @@ function renderNewsroom(){
     newsThreads.appendChild(el);
   });
 }
-renderNews();
 
 newsAdd.addEventListener('click', ()=>{
   const t = newsPost.value.trim(); if(!t) return;
-  const currentThreadId = Object.keys(threads).find(k => 
-    document.getElementById('view-newsroom').querySelector('h3').textContent.includes(NEWS.find(n => n.id === Number(k))?.title)
-  );
-  
-  if (currentThreadId) {
-    threads[currentThreadId].unshift({type:newsType.value, text:t, by:'あなた'});
-  } else {
-    newsItems.unshift({type:newsType.value, title:t, author:'あなた'});
-  }
+  threads[currentNewsId] = threads[currentNewsId] || [];
+  threads[currentNewsId].unshift({type:newsType.value, text:t, by:'あなた'});
   newsPost.value=''; renderNewsroom();
 });
 
@@ -490,7 +468,7 @@ newsAdd.addEventListener('click', ()=>{
 renderNewsroom();
 
 document.getElementById('newsSummarize').addEventListener('click', ()=>{
-  const count = newsItems.filter(x=>x.type==='candidate').length;
+  const count = (threads[currentNewsId] || []).filter(x=>x.type==='candidate').length;
   newsSummaryNote.textContent = `課題候補 ${count} 件をカードに集約しました（固定メッセージ）。`;
 });
 
@@ -499,12 +477,16 @@ const freeFeed = document.getElementById('freeFeed');
 const freeInput = document.getElementById('freeInput');
 const freeSend = document.getElementById('freeSend');
 const candidates = document.getElementById('candidates');
-let freeItems = [
-  {text:'制度の説明が難しくて申請に時間がかかる', by:'住民A', badge:true},
-  {text:'病児往診と病児保育の比較が知りたい', by:'住民B', badge:true},
-];
-
+let freeItems = [];
 let candidateList = [];
+async function loadCommunity(){
+  const res = await fetch('http://localhost:8000/community');
+  const data = await res.json();
+  freeItems = data.free;
+  candidateList = data.candidates;
+  renderFree();
+  renderCandidates();
+}
 
 function renderFree(){
   freeFeed.innerHTML='';
@@ -536,7 +518,7 @@ function renderCandidates(){
     candidates.appendChild(el);
   });
 }
-renderFree(); renderCandidates();
+loadCommunity();
 
 freeSend.addEventListener('click', ()=>{
   const t = freeInput.value.trim(); if(!t) return;
@@ -575,11 +557,18 @@ candidates.addEventListener('click', (e)=>{
 const cardThreads = document.getElementById('cardThreads');
 const cardInput = document.getElementById('cardInput');
 const cardAdd = document.getElementById('cardAdd');
-let cardItems = [
-  {text:'最新値だと平日午前は対応率が上がってます', type:'data'},
-  {text:'夜間帯は人員足りないリスクあり', type:'risk'},
-  {text:'当日キャンセル枠を近隣配信したい', type:'idea'},
-];
+let cardItems = [];
+async function loadCard(){
+  const res = await fetch('http://localhost:8000/card');
+  const data = await res.json();
+  document.getElementById('cardTitle').textContent = `[課題カード] ${data.title}`;
+  document.getElementById('kpiNow').textContent = data.kpi_now + '%';
+  document.getElementById('kpiBar').style.width = data.kpi_now + '%';
+  document.getElementById('kpiGoal').textContent = data.kpi_goal;
+  document.getElementById('cardChips').innerHTML = data.status_chips.map(s=>`<span class="chip">${s}</span>`).join('');
+  cardItems = data.threads;
+  renderCard();
+}
 
 function typeChip(t){
   if(t==='data') return '<span class="tag">データ更新</span>';
@@ -601,7 +590,7 @@ function renderCard(){
     cardThreads.appendChild(el);
   });
 }
-renderCard();
+loadCard();
 
 cardAdd.addEventListener('click', ()=>{
   const t = cardInput.value.trim(); if(!t) return;
@@ -612,17 +601,6 @@ cardAdd.addEventListener('click', ()=>{
   cardItems.unshift({text:t, type:ty});
   cardInput.value=''; renderCard();
 });
-
-/* KPI animation demo */
-(function(){
-  const bar = document.getElementById('kpiBar');
-  const now = document.getElementById('kpiNow');
-  let v=48; const goal=80;
-  const timer = setInterval(()=>{
-    v+=1; if(v>=55){v=55; clearInterval(timer)}
-    bar.style.width = v+'%'; now.textContent = v+'%';
-  },25);
-})();
 
 /* Plan modal */
 const backPlan = document.getElementById('backPlan');
