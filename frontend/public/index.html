@@ -1,653 +1,666 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>渋谷コミュニティ：ニュース起点＆コミュ起点デモ</title>
-<style>
-  :root{
-    --bg:#0f172a; --panel:#0b1220; --line:#1f2c45; --text:#e5e7eb; --muted:#94a3b8;
-    --green:#22c55e; --blue:#38bdf8; --warn:#f59e0b; --bad:#ef4444;
-    --radius:14px; --shadow:0 8px 26px rgba(0,0,0,.25);
-  }
-  *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 system-ui,-apple-system,"Segoe UI","Hiragino Sans","Noto Sans JP",Roboto,Arial,sans-serif}
-  .header{position:sticky;top:0;z-index:20;display:flex;gap:12px;align-items:center;padding:12px 16px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,rgba(11,18,32,.95),rgba(11,18,32,.8));backdrop-filter:blur(8px)}
-  .brand{font-weight:700}
-  .tabs{display:flex;gap:8px;flex-wrap:wrap}
-  .tab{padding:8px 12px;border:1px solid var(--line);border-radius:999px;background:#0b1220;color:#cbd5e1;cursor:pointer}
-  .tab.active{border-color:#334155;color:#fff}
-  .wrap{max-width:1200px;margin:0 auto;padding:16px}
-  .row{display:grid;grid-template-columns:1.2fr .8fr;gap:16px}
-  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px}
-  .card h3{margin:0 0 8px}
-  .muted{color:var(--muted)}
-  .btn{border:1px solid var(--line);background:#0b1220;color:#fff;border-radius:10px;padding:8px 10px;cursor:pointer}
-  .btn.primary{background:linear-gradient(180deg,#0b1e12,#0b1a12);border-color:#14532d}
-  .btn.accent{background:linear-gradient(180deg,#061a2b,#071626);border-color:#1f2c45}
-  .btn.warn{background:linear-gradient(180deg,#2b1b06,#221606);border-color:#7c3e03}
-  .input{width:100%;border:1px solid var(--line);background:#0b1220;color:#fff;border-radius:12px;padding:10px}
-  .flex{display:flex;gap:8px;align-items:center}
-  .space{height:8px}
-  .kpi-bar{height:12px;border-radius:999px;background:#071220;border:1px solid #0f1a30;overflow:hidden}
-  .kpi-bar>b{display:block;height:100%;background:linear-gradient(90deg,var(--green),#4ade80)}
-  .tag{font-size:12px;border:1px solid var(--line);border-radius:999px;padding:2px 8px;background:#0f1a30;display:inline-block}
-  .chips{display:flex;gap:8px;flex-wrap:wrap}
-  .chip{border:1px solid var(--line);border-radius:999px;padding:6px 10px;background:#0b1220;font-size:12px;color:#cbd5e1}
-  .badge{font-size:12px;border:1px solid var(--line);border-radius:999px;padding:2px 8px;background:#0b1220;color:#cbd5e1;margin-left:6px}
-  .news{border:1px solid var(--line);border-radius:12px;padding:12px;background:linear-gradient(180deg,#0c1424,#0b1220)}
-  .news h3{margin:0 0 6px}
-  .right{margin-left:auto}
-  .line{border-top:1px solid #162036;margin:10px 0}
-  /* Chat */
-  .chat{display:flex;flex-direction:column;gap:8px;height:420px;overflow:auto;border:1px dashed #15223d;border-radius:12px;padding:10px;background:#0b1220}
-  .msg{max-width:76%;padding:10px;border-radius:12px;border:1px solid var(--line)}
-  .me{background:#0c1424;margin-left:auto}
-  .bot{background:#0c1a2c}
-  .sys{background:#0c1a18;border-color:#174c36}
-  .composer{display:flex;gap:8px;margin-top:8px}
-  /* Thread list */
-  .thread{border:1px solid var(--line);border-radius:12px;padding:12px;background:linear-gradient(180deg,#0c1424,#0b1220);margin-bottom:10px}
-  .thread h4{margin:6px 0}
-  .actions{display:flex;gap:8px;flex-wrap:wrap}
-  /* Modal */
-  .back{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:40}
-  .modal{width:min(900px,92vw);background:#0b1220;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:16px}
-  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-  .tile{border:1px solid var(--line);border-radius:12px;padding:12px;background:#0c1526}
-  .close{float:right;cursor:pointer;color:#93a3b8}
-  /* Responsive */
-  @media (max-width:960px){
-    .row{grid-template-columns:1fr}
-    .layout{grid-template-columns:1fr}
-    .news-grid{grid-template-columns:1fr}
-  }
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>課題共創ダッシュボード（スマホMock）</title>
+  <style>
+    :root{
+      --bg:#f8fafc;           /* slate-50 */
+      --panel:#ffffff;        /* white */
+      --muted:#64748b;        /* slate-500 */
+      --text:#1e293b;         /* slate-800 */
+      --line:#e2e8f0;         /* slate-200 */
+      --accent:#0891b2;       /* cyan-600 */
+      --accent-2:#0284c7;     /* sky-600 */
+      --ok:#059669;           /* emerald-600 */
+      --warn:#d97706;         /* amber-600 */
+      --touch:56px;           /* min touch */
+      --radius:16px;
+      --shadow:0 6px 18px rgba(0,0,0,.1);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+      background:linear-gradient(180deg, #f1f5f9, #e2e8f0 50%, #f1f5f9 100%); color:var(--text);
+    }
+    #app{height:100%; display:flex; flex-direction:column}
+    header{
+      position:sticky; top:0; z-index:5;
+      backdrop-filter:saturate(130%) blur(8px);
+      background:rgba(255,255,255,.9);
+      border-bottom:1px solid var(--line);
+      padding:10px 16px; display:flex; align-items:center; gap:12px;
+    }
+    header h1{font-size:16px; margin:0; letter-spacing:.2px}
+    header .chip{padding:4px 10px; border-radius:999px; background:#e0f2fe; color:#0c4a6e; border:1px solid #bae6fd; font-size:12px}
+
+    main{flex:1; overflow:auto; padding:12px 12px 92px}
+
+    /* Cards */
+    .card{background:linear-gradient(180deg,#ffffff,#f8fafc); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:14px;}
+    .card + .card{margin-top:12px}
+    .card-title{font-size:15px; margin:0 0 6px}
+    .muted{color:var(--muted); font-size:13px}
+    .row{display:flex; align-items:center; gap:10px}
+    .tag{border:1px solid #cbd5e1; color:#475569; background:#f1f5f9; padding:4px 8px; border-radius:999px; font-size:12px}
+    
+    /* News Cards Specific */
+    .news-card{display:flex; align-items:flex-start;}
+
+    .btn{height:40px; padding:0 14px; border-radius:12px; border:1px solid #cbd5e1; color:#475569; background:#ffffff; cursor:pointer}
+    .btn.primary{border-color:#0891b2; background:linear-gradient(180deg,#0891b2,#0e7490); color:#ffffff}
+    .btn.ghost{background:transparent}
+    .btn.block{display:block; width:100%}
+
+    /* Bottom Nav */
+    nav{position:fixed; bottom:0; left:0; right:0; z-index:10; background:rgba(255,255,255,.95); backdrop-filter:blur(8px); border-top:1px solid var(--line)}
+    nav .bar{display:grid; grid-template-columns:repeat(5,1fr);}
+    nav button{height:var(--touch); background:transparent; color:var(--muted); border:none; font-size:11px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px}
+    nav button[aria-current="page"]{color:var(--accent)}
+    .ico{font-size:22px; line-height:0}
+
+
+
+    /* Lists */
+    .list{display:flex; flex-direction:column; gap:12px}
+    /* News */
+
+    /* Community */
+    .pill-tabs{display:flex; gap:8px; overflow:auto; padding-bottom:8px}
+    .pill-tabs .pill{white-space:nowrap; padding:8px 12px; border-radius:999px; border:1px solid #cbd5e1; background:#f8fafc; color:#64748b; font-size:13px}
+    .pill[aria-selected="true"]{background:#0891b2; color:#ffffff; border-color:#0891b2}
+
+    /* Issue Board */
+    .slider{width:100%}
+    .score{font-size:12px; color:#9bb4d1}
+    .kanban-hint{font-size:12px; color:#88a3c5}
+
+    /* Dashboard */
+    .kpi-grid{display:grid; grid-template-columns:1fr; gap:12px}
+    .kpi{padding:12px; border-radius:14px; border:1px solid #e2e8f0; background:linear-gradient(180deg,#ffffff,#f8fafc)}
+    .kpi h3{margin:0 0 6px; font-size:14px}
+    .spark{width:100%; height:64px}
+    .kpi .summary{display:flex; align-items:center; justify-content:space-between}
+
+    /* Modals */
+    .modal{position:fixed; inset:0; z-index:20; display:none; background:rgba(0,0,0,.3);}
+    .modal[open]{display:flex; align-items:flex-end; justify-content:center;}
+    .modal .scrim{position:absolute; inset:0; background:transparent; cursor:pointer;}
+    .modal .panel{position:relative; width:100%; max-width:500px; max-height:86%; background:linear-gradient(180deg,#ffffff,#f8fafc); border-radius:16px 16px 0 0; border:1px solid #e2e8f0; box-shadow:var(--shadow); padding:14px; overflow:auto; margin-bottom:0;}
+    .modal header{position:sticky; top:0; background:transparent; backdrop-filter:none; border-bottom:none; padding:0 0 8px; margin-bottom:8px}
+    .modal header h2{font-size:16px; margin:0}
+
+    .helper{font-size:12px; color:#64748b}
+    .field{margin:10px 0}
+    label{font-size:12px; color:#64748b}
+    input[type="text"], textarea, select{width:100%; padding:12px; border-radius:12px; border:1px solid #cbd5e1; background:#ffffff; color:#1e293b}
+    textarea{min-height:80px}
+    .chips{display:flex; gap:6px; flex-wrap:wrap}
+    .chip-btn{padding:6px 10px; border-radius:999px; border:1px solid #cbd5e1; background:#f8fafc; color:#475569; font-size:12px}
+    .chip-btn.active{border-color:#0891b2; background:#0891b2; color:#ffffff}
+
+    .toast{position:fixed; bottom:92px; left:50%; transform:translateX(-50%); background:#0891b2; border:1px solid #0e7490; color:#ffffff; padding:10px 12px; border-radius:12px; box-shadow:var(--shadow); display:none; z-index:40}
+    .toast[show]{display:block}
+
+    .divider{height:1px; background:#e2e8f0; margin:10px 0}
+
+    .empty{border:1px dashed #cbd5e1; padding:16px; border-radius:16px; text-align:center; color:#64748b; font-size:14px}
+  </style>
 </head>
 <body>
-  <header class="header">
-    <div class="brand">渋谷コミュ・MVPデモ</div>
-    <div class="tabs" id="tabs">
-      <button class="tab active" data-view="newsdm">ニュースDM</button>
-      <button class="tab" data-view="newsroom">ニュース一時コミュ</button>
-      <button class="tab" data-view="community">コミュニティ</button>
-      <button class="tab" data-view="card">課題カード</button>
-    </div>
+<div id="app">
+  <header>
+    <div style="font-size:20px">🌐</div>
+    <h1>課題共創ダッシュボード</h1>
+    <span class="chip">渋谷区・MVP</span>
   </header>
 
-  <div class="wrap">
-    <!-- ========== View: News DM ========== -->
-    <section id="view-newsdm">
-      <!-- フィルタ -->
-      <div class="card" style="margin-bottom:16px;position:sticky;top:60px;z-index:10;background:var(--panel);backdrop-filter:blur(8px)">
-        <h3>フィルタ</h3>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
-          <div>
-            <label class="muted" style="font-size:12px">キーワード</label>
-            <input id="q" class="input" placeholder="例：病児保育／学童／防災" />
-          </div>
-          <div>
-            <label class="muted" style="font-size:12px">カテゴリ</label>
-            <select id="cat" class="input">
-              <option value="">すべて</option>
-              <option>子育て</option>
-              <option>教育</option>
-              <option>福祉</option>
-              <option>防災</option>
-              <option>都市開発</option>
-            </select>
-          </div>
-        </div>
-        <div style="display:flex;gap:12px;align-items:center">
-          <label class="muted" style="font-size:12px"><input type="checkbox" id="unreadOnly" /> 未読のみ</label>
-          <button class="btn" id="clear">リセット</button>
-        </div>
+  <main>
+    <!-- NEWS -->
+    <section id="screen-news" class="screen" data-title="ニュース">
+      <div class="pill-tabs" id="newsFilters" aria-label="カテゴリ">
+        <button class="pill" data-tag="all" aria-selected="true">すべて</button>
+        <button class="pill" data-tag="子育て">子育て</button>
+        <button class="pill" data-tag="観光">観光</button>
+        <button class="pill" data-tag="移動">移動</button>
+        <button class="pill" data-tag="安全">安全</button>
       </div>
-
-      <!-- ニュース一覧 -->
-      <div class="news-grid" id="grid" style="display:flex;flex-direction:column;gap:12px"></div>
+      <div id="newsList" class="list"></div>
     </section>
 
-    <!-- ========== View: News Temporary Community ========== -->
-    <section id="view-newsroom" style="display:none">
-      <div class="row">
-        <div class="card">
-          <h3>一時コミュ：病児保育ニュース</h3>
-          <div class="chips">
-            <span class="chip">論点1：当日対応率</span>
-            <span class="chip">論点2：空き枠の見える化</span>
-            <span class="chip">論点3：夜間需要</span>
-          </div>
-          <div class="space"></div>
-          <div id="newsThreads"></div>
-          <div class="flex">
-            <input id="newsPost" class="input" placeholder="雑談 or 課題候補を書き込む…">
-            <select id="newsType" class="btn">
-              <option value="chat">雑談</option>
-              <option value="candidate">課題候補</option>
-            </select>
-            <button class="btn primary" id="newsAdd">投稿</button>
-          </div>
-          <div class="space"></div>
-          <button class="btn accent" id="newsSummarize">候補を課題カードにまとめる</button>
-          <span class="muted" id="newsSummaryNote" style="margin-left:8px"></span>
-        </div>
-        <div class="card">
-          <h3>このページの役割</h3>
-          <p class="muted">ニュースを核に緩く集まり、盛り上がった論点は課題カードとして資産化します。</p>
-          <div class="chips">
-            <span class="chip">イベント型</span>
-            <span class="chip">カード化提案</span>
-            <span class="chip">恒常コミュへ移送</span>
-          </div>
-        </div>
+    <!-- COMMUNITY -->
+    <section id="screen-community" class="screen" data-title="コミュニティ" hidden>
+      <div class="pill-tabs" id="commTabs">
+        <button class="pill" data-mode="popular" aria-selected="true">人気</button>
+        <button class="pill" data-mode="new">新着</button>
+        <button class="pill" data-mode="suggest">おすすめ</button>
       </div>
+      <div id="communityList" class="list"></div>
     </section>
 
-    <!-- ========== View: Community (free talk -> candidate -> elevate) ========== -->
-    <section id="view-community" style="display:none">
-      <div class="row">
-        <div class="card">
-          <h3>#ひとり親支援コミュニティ</h3>
-          <p class="muted">自由発言OK。AIが「課題候補ですか？」と提案します。</p>
-          <div id="freeFeed"></div>
-          <div class="flex">
-            <input class="input" id="freeInput" placeholder="自由に投稿…">
-            <button class="btn primary" id="freeSend">投稿</button>
-          </div>
-        </div>
-        <div class="card">
-          <h3>候補課題リスト</h3>
-          <div id="candidates"></div>
-        </div>
+    <!-- ISSUES -->
+    <section id="screen-issues" class="screen" data-title="課題ボード" hidden>
+      <div class="row" style="justify-content:space-between; margin-bottom:8px">
+        <div class="kanban-hint">影響度と実現性で優先度を決めましょう</div>
+        <button class="btn" id="newIssueBtn">＋ 課題を作成</button>
       </div>
+      <div id="issueList" class="list"></div>
     </section>
 
-    <!-- ========== View: Card detail (KPI + threads + plan + JIT) ========== -->
-    <section id="view-card" style="display:none">
-      <div class="row">
-        <div class="card">
-          <h3>[課題カード] 病児保育の空きが見えない</h3>
-          <p class="muted">KPI: 当日対応率 <b id="kpiNow">55%</b> / 目標 80%</p>
-          <div class="kpi-bar"><b id="kpiBar" style="width:55%"></b></div>
-          <div class="space"></div>
-          <div class="chips">
-            <span class="chip">状態: 具体化中</span>
-            <span class="chip">タグ: 子育て・医療</span>
-            <span class="chip">鮮度: 本日更新</span>
-          </div>
-          <div class="space"></div>
-          <div id="cardThreads"></div>
-          <div class="flex">
-            <input id="cardInput" class="input" placeholder="カードに関するコメント…">
-            <button class="btn" id="cardAdd">コメント</button>
-          </div>
-          <div class="space"></div>
-          <div class="actions">
-            <button class="btn accent" id="openPlan">検証計画ドラフト</button>
-            <button class="btn" id="openJIT">JIT一枚絵</button>
-            <button class="btn warn" id="cycleG">G1→G2→G3</button>
-            <span class="muted" id="gStatus">現在: G1承認待ち（SLO=48h）</span>
-          </div>
+    <!-- DASHBOARD -->
+    <section id="screen-dash" class="screen" data-title="ダッシュボード" hidden>
+      <div id="kpiGrid" class="kpi-grid"></div>
+      <div class="divider"></div>
+      <button class="btn block" id="addAnnotationBtn">注釈を追加（施策開始など）</button>
+    </section>
+
+    <!-- MY PAGE -->
+    <section id="screen-me" class="screen" data-title="マイページ" hidden>
+      <div class="card">
+        <h3 class="card-title">参加中のコミュニティ</h3>
+        <div id="myComms" class="chips"></div>
+        <div class="divider"></div>
+        <div class="row" style="justify-content:space-between">
+          <span class="muted">貢献バッジ</span>
+          <span>🏅×<span id="badgeCount">0</span></span>
         </div>
-        <div class="card">
-          <h3>このページの役割</h3>
-          <ul class="muted">
-            <li>KPIの可視化</li>
-            <li>コメント自動分類（データ更新／リスク／アイデア）</li>
-            <li>計画ドラフトとJIT一枚絵</li>
-          </ul>
-        </div>
+      </div>
+      <div class="card" style="margin-top:12px">
+        <h3 class="card-title">私の課題カード</h3>
+        <div id="myIssues" class="list"></div>
       </div>
     </section>
-  </div>
+  </main>
 
-  <!-- ========== Modal: Plan ========== -->
-  <div class="back" id="backPlan">
-    <div class="modal">
-      <span class="close" id="closePlan">✕</span>
-      <h3>検証計画（ドラフト）</h3>
-      <div class="grid3">
-        <div class="tile">
-          <b>対象/期間</b>
-          <p class="muted">対象：2〜5歳児の家庭（週あたり100件）<br>期間：4週間</p>
-        </div>
-        <div class="tile">
-          <b>指標/閾値</b>
-          <p class="muted">指標：当日対応率、予約成立件数、平均待ち時間<br>閾値：対応率+15pt / 待ち-20%</p>
-        </div>
-        <div class="tile">
-          <b>バックアウト</b>
-          <p class="muted">効果が出ない/負荷過多の場合はWeek2で中止</p>
-        </div>
-      </div>
-      <div class="space"></div>
-      <button class="btn primary" id="approvePlan">この計画でG2申請</button>
-      <span class="muted" id="planNote" style="margin-left:8px"></span>
+  <!-- Bottom Nav -->
+  <nav>
+    <div class="bar">
+      <button data-target="news" aria-current="page"><div class="ico">📰</div>ニュース</button>
+      <button data-target="community"><div class="ico">👥</div>コミュ</button>
+      <button data-target="issues"><div class="ico">🗂️</div>課題</button>
+      <button data-target="dash"><div class="ico">📊</div>ダッシュ</button>
+      <button data-target="me"><div class="ico">👤</div>マイ</button>
     </div>
-  </div>
+  </nav>
 
-  <!-- ========== Modal: DM ========== -->
-  <div class="back" id="backDM">
-    <div class="modal">
-      <span class="close" id="closeDM">✕</span>
-      <h3 id="dmTitle">ニュースとのDM</h3>
-      <div class="chat" id="dmChat" style="height:300px;margin:10px 0">
-        <div class="msg bot">News Concierge：このニュースの要点を3行でまとめました。質問どうぞ！</div>
+
+
+  <!-- Detail Modal -->
+  <dialog id="detailModal" class="modal" aria-label="詳細情報">
+    <div class="scrim" data-close></div>
+    <div class="panel">
+      <header class="row" style="justify-content:space-between">
+        <h2>詳細情報</h2>
+        <div class="row" style="gap:8px">
+          <button class="btn primary" id="detailToIssue">課題カードを作る</button>
+          <button class="btn ghost" data-close>閉じる</button>
+        </div>
+      </header>
+      <div id="detailContext" class="helper">ニュースの詳細情報とAI分析</div>
+      <div class="divider"></div>
+      <div class="card">
+        <h3 class="card-title">要約</h3>
+        <div id="detailSummary" class="muted"></div>
       </div>
-      <div class="composer">
-        <input class="input" id="dmInput" placeholder="非公開DM：このニュースについて質問…">
-        <button class="btn primary" id="dmSend">送信</button>
+
+      <div class="card">
+        <h3 class="card-title">KPI候補</h3>
+        <div id="detailKpis" class="chips"></div>
+      </div>
+      <div class="card">
+        <h3 class="card-title">AIとチャット</h3>
+        <div id="chatArea" style="max-height:300px; overflow-y:auto; border:1px solid #e2e8f0; border-radius:8px; padding:8px; background:#f8fafc; margin-bottom:8px;">
+          <div id="chatMessages"></div>
+        </div>
+        <div class="row" style="gap:8px">
+          <input type="text" id="chatInput" placeholder="AIに質問する..." style="flex:1; margin:0;">
+          <button class="btn primary" id="sendChat">送信</button>
+        </div>
       </div>
     </div>
-  </div>
+  </dialog>
 
-  <!-- ========== Modal: JIT ========== -->
-  <div class="back" id="backJIT">
-    <div class="modal">
-      <span class="close" id="closeJIT">✕</span>
-      <h3>JIT一枚絵：今週の状況</h3>
-      <p class="muted">問い：当日対応率を80%へ。今週のボトルネックは？</p>
-      <div class="grid3">
-        <div class="tile">
-          <b>申請/予約の進捗</b>
-          <div class="kpi-bar"><b style="width:72%"></b></div>
-          <p class="muted">72%（先週+8pt）</p>
-        </div>
-        <div class="tile">
-          <b>当日対応成功率</b>
-          <div class="kpi-bar"><b style="width:55%"></b></div>
-          <p class="muted">55%（目標80%）</p>
-        </div>
-        <div class="tile">
-          <b>空き枠の穴</b>
-          <ul class="muted" style="margin:6px 0 0 18px">
-            <li>木曜 18–21時：×</li>
-            <li>土曜 午前：△</li>
-            <li>平日 午前：◯</li>
-          </ul>
-        </div>
+  <!-- Issue Create/Edit Modal -->
+  <dialog id="issueModal" class="modal" aria-label="課題の作成">
+    <div class="scrim" data-close></div>
+    <div class="panel">
+      <header class="row" style="justify-content:space-between">
+        <h2>課題カード</h2>
+        <button class="btn ghost" data-close>閉じる</button>
+      </header>
+      <div class="field">
+        <label>タイトル</label>
+        <input id="issueTitle" type="text" placeholder="例：ベビーカーでの坂道移動がつらい" />
       </div>
-      <div class="space"></div>
-      <div class="tile">
-        <b>推奨アクション</b>
-        <ol class="muted" style="margin:6px 0 0 18px">
-          <li>民間枠を木曜夜だけ暫定連携（2週間）</li>
-          <li>予約導線の文言修正（Form Buddy案）</li>
-          <li>夜間需要アンケ追加配信（来週）</li>
-        </ol>
+      <div class="field">
+        <label>対象者</label>
+        <input id="issueTarget" type="text" placeholder="例：子育て世帯（0–3歳）" />
+      </div>
+      <div class="field">
+        <label>場所・時間帯</label>
+        <input id="issueArea" type="text" placeholder="例：代々木上原周辺／夕方" />
+      </div>
+      <div class="field">
+        <label>根拠（ニュース・観測など）</label>
+        <textarea id="issueEvidence" placeholder="リンクやメモ（モック）"></textarea>
+      </div>
+      <div class="field">
+        <label>KPI候補（タップで選択）</label>
+        <div id="issueKpiChips" class="chips"></div>
+      </div>
+      <div class="row" style="gap:8px; margin-top:12px">
+        <button class="btn" data-close>キャンセル</button>
+        <button class="btn primary" id="issueSave">保存</button>
       </div>
     </div>
-  </div>
+  </dialog>
+
+  <!-- Hypothesis Builder Modal -->
+  <dialog id="hypModal" class="modal" aria-label="仮説デザイン">
+    <div class="scrim" data-close></div>
+    <div class="panel">
+      <header class="row" style="justify-content:space-between">
+        <h2>仮説デザイン</h2>
+        <button class="btn ghost" data-close>閉じる</button>
+      </header>
+      <div id="hypStepWrap">
+        <div class="field">
+          <label>課題</label>
+          <div id="hypIssue" class="card muted"></div>
+        </div>
+        <div class="field">
+          <label>仮説（1行で）</label>
+          <input id="hypText" type="text" placeholder="例：段差回避ルート提示で移動時間が短縮される" />
+        </div>
+        <div class="field">
+          <label>KPI（選択または追加）</label>
+          <div id="hypKpiChips" class="chips"></div>
+          <input id="hypKpiAdd" type="text" placeholder="KPIを追加（例：平均所要時間）" />
+        </div>
+        <div class="field">
+          <label>データソース</label>
+          <select id="hypDataSrc">
+            <option>手入力ログ（モック）</option>
+            <option>CSVインポート（モック）</option>
+            <option>区オープンデータ（モック）</option>
+          </select>
+        </div>
+      </div>
+      <div class="row" style="gap:8px; margin-top:12px">
+        <button class="btn" data-close>戻る</button>
+        <button class="btn primary" id="hypFinish">MVPダッシュボードを生成</button>
+      </div>
+    </div>
+  </dialog>
+
+  <div class="toast" id="toast"></div>
+</div>
 
 <script>
-/* ========== View switch ========== */
-const tabs = document.querySelectorAll('.tab');
-const views = {
-  newsdm: document.getElementById('view-newsdm'),
-  newsroom: document.getElementById('view-newsroom'),
-  community: document.getElementById('view-community'),
-  card: document.getElementById('view-card')
-};
-tabs.forEach(t=>{
-  t.addEventListener('click', ()=>{
-    tabs.forEach(x=>x.classList.remove('active'));
-    t.classList.add('active');
-    const v = t.dataset.view;
-    Object.keys(views).forEach(k=>views[k].style.display = (k===v?'block':'none'));
-  });
-});
+  // ------------------ Mock Data ------------------
+  const state = {
+    selectedNews: null,
+    selectedIssue: null,
+    badges: 0,
+    myCommunities: [],
+    news:[
+      {id:1, title:"保育園の送迎混雑の時間帯を分散へ", summary:"朝8時台に送迎が集中する保育園で、導線の改善と時差利用の試行が始まりました。", tags:["子育て","安全"], thumb:""},
+      {id:2, title:"原宿駅周辺の歩行回遊を促進", summary:"歩行者空間の再編で、回遊ルートの案内サインを実証。観光満足度の向上を目指します。", tags:["観光","移動"], thumb:""},
+      {id:3, title:"坂道移動の負担軽減へ ルート案内の実験", summary:"ベビーカーや高齢者に配慮した段差・勾配回避ルートを提示する実証。", tags:["移動","安全","子育て"], thumb:""}
+    ],
+    communities:[
+      {id:"c1", name:"子育て@渋谷", members:1320, hot:"送迎導線の改善"},
+      {id:"c2", name:"観光と回遊性", members:980, hot:"表参道の混雑時間帯"},
+      {id:"c3", name:"歩きやすい渋谷", members:1540, hot:"坂道・段差マップ"}
+    ],
+    issues:[],
+    dashboards:[
+      {id:"k1", title:"観光回遊ルートの満足度", unit:"pt", current:78, target:85, data:[62,65,66,70,71,75,78], note:"案内サインの実証"}
+    ]
+  };
 
-/* ========== 1) News DM (news list + DM modal) ========== */
-// モックデータ（複数ニュース）
-const NEWS = [
-  {id:1, title:"病児保育の枠拡充を検討", summary:"当日対応率の改善を目標に枠拡充を検討。詳細は来月発表。", cat:"子育て", tags:["病児保育","子育て"], ts:"2025-08-18T10:00:00", unread:true, cards:1, comments:6},
-  {id:2, title:"夜間学童の試行案内", summary:"18–21時の学童保育の試行を開始。対象エリアは渋谷駅周辺。", cat:"教育", tags:["学童","放課後"], ts:"2025-08-20T09:00:00", unread:false, cards:0, comments:2},
-  {id:3, title:"地域防災訓練の見直し", summary:"高層マンション向け避難動線の再設計を検討中。", cat:"防災", tags:["避難","訓練"], ts:"2025-08-17T13:00:00", unread:true, cards:0, comments:4},
-  {id:4, title:"緑道と公共空間の利活用", summary:"再開発で創出された公共空間にイベントルール案。", cat:"都市開発", tags:["緑道","公共空間"], ts:"2025-08-15T18:00:00", unread:false, cards:2, comments:8},
-  {id:5, title:"高齢者フレイル対策の強化", summary:"見守りとデータ連携の強化で早期介入モデルを試行。", cat:"福祉", tags:["フレイル","見守り"], ts:"2025-08-22T08:00:00", unread:true, cards:0, comments:1},
-];
+  const KPI_LIB = {
+    子育て:["送迎待ち時間(分)","ベビーカー通行満足度(点)","段差箇所件数"],
+    観光:["観光満足度(点)","回遊距離(㎞)","滞在時間(分)"],
+    移動:["平均所要時間(分)","移動成功率(%)","危険箇所報告数"],
+    安全:["ヒヤリハット報告数","混雑度指数","歩道幅不足箇所"]
+  };
 
-// ユーティリティ
-const fmt = (iso)=> {
-  const d = new Date(iso);
-  return `${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
-};
-
-// ニュースリスト描画
-const grid = document.getElementById('grid');
-const q = document.getElementById('q');
-const cat = document.getElementById('cat');
-const unreadOnly = document.getElementById('unreadOnly');
-const clearBtn = document.getElementById('clear');
-
-function passFilters(n){
-  const kw = q.value.trim();
-  if (cat.value && n.cat !== cat.value) return false;
-  if (unreadOnly.checked && !n.unread) return false;
-  if (kw){
-    const hit = (n.title+n.summary+n.tags.join(",")).toLowerCase().includes(kw.toLowerCase());
-    if(!hit) return false;
+  // ------------------ Helpers ------------------
+  const $ = (q, root=document)=>root.querySelector(q);
+  const $$ = (q, root=document)=>Array.from(root.querySelectorAll(q));
+  function toast(msg){ const t=$('#toast'); t.textContent=msg; t.setAttribute('show',''); setTimeout(()=>t.removeAttribute('show'), 1700); }
+  function openModal(sel){ 
+    const d=$(sel); 
+    if(d) {
+      d.setAttribute('open',''); 
+      // スクロール防止
+      document.body.style.overflow = 'hidden';
+    }
   }
-  return true;
-}
+  function closeModal(e){ 
+    const d=e.target.closest('.modal'); 
+    if(!d) return; 
+    d.removeAttribute('open'); 
+    // スクロール復活
+    document.body.style.overflow = '';
+    document.body.style.position = '';
+  }
+  function chip(el){ el.classList.toggle('active'); }
 
-function renderNews(){
-  grid.innerHTML='';
-  NEWS.filter(passFilters).sort((a,b)=> new Date(b.ts)-new Date(a.ts)).forEach(n=>{
-    const el = document.createElement('div');
-    el.className='news';
-    el.innerHTML = `
-      <div class="flex">
-        <h3>${n.title}</h3>
-        <span class="right muted">${fmt(n.ts)}</span>
-      </div>
-      <p class="muted" style="margin:6px 0">${n.summary}</p>
-      <div class="flex">
-        <div>
-          <span class="chip">${n.cat}</span>
-          ${n.tags.map(t=>`<span class="chip">${t}</span>`).join('')}
-          ${n.unread?`<span class="badge">未読</span>`:''}
-          ${n.cards?`<span class="badge">カード化 ${n.cards}</span>`:''}
-          ${n.comments?`<span class="badge">コメント ${n.comments}</span>`:''}
+  // ------------------ Navigation ------------------
+  $$('#app nav button').forEach(btn=>btn.addEventListener('click',()=>{
+    const target = btn.dataset.target; // news/community/issues/dash/me
+    $$('.screen').forEach(s=>s.hidden = s.id!==`screen-${target}`);
+    $$('#app nav button').forEach(b=>b.removeAttribute('aria-current'));
+    btn.setAttribute('aria-current','page');
+    // header title update
+    const title = $(`#screen-${target}`).dataset.title || '';
+    $('header h1').textContent = `課題共創ダッシュボード — ${title}`;
+  }));
+
+  // ------------------ News ------------------
+  function renderNews(tag='all'){
+    const box = $('#newsList'); box.innerHTML='';
+    const items = state.news.filter(n=> tag==='all' || n.tags.includes(tag));
+    if(!items.length){ box.innerHTML = `<div class="empty">該当ニュースがありません</div>`; return; }
+    items.forEach(n=>{
+      const card = document.createElement('div'); card.className='card news-card';
+      card.innerHTML = `
+        <div style="flex:1">
+          <h3 class="card-title">${n.title}</h3>
+          <div class="muted">${n.summary}</div>
+          <div class="chips" style="margin-top:6px">${n.tags.map(t=>`<span class='tag'>${t}</span>`).join('')}</div>
         </div>
-      </div>
-      <div class="line"></div>
-      <div style="display:flex;flex-direction:column;gap:8px">
-        <div style="display:flex;gap:8px">
-          <button class="btn primary" data-dm="${n.id}" style="flex:1">AIに質問（DM）</button>
-          <button class="btn accent" data-comm="${n.id}" style="flex:1">一時コミュ</button>
+        <div style="display:flex; align-items:flex-start; margin-left:16px; padding-top:4px;">
+          <button class="btn" data-act="detail" data-id="${n.id}" style="min-width:60px; height:32px; font-size:12px;">詳細</button>
+        </div>`;
+      box.appendChild(card);
+    })
+  }
+  
+  $('#newsFilters').addEventListener('click', (e)=>{
+    const pill=e.target.closest('.pill'); if(!pill) return; $$('#newsFilters .pill').forEach(p=>p.removeAttribute('aria-selected')); pill.setAttribute('aria-selected','true');
+    renderNews(pill.dataset.tag);
+  });
+
+  $('#newsList').addEventListener('click', (e)=>{
+    const btn = e.target.closest('button'); if(!btn) return;
+    const id = Number(btn.dataset.id); const item = state.news.find(n=>n.id===id); state.selectedNews = item;
+    if(btn.dataset.act==='detail') { openDetailWith(item); }
+  });
+
+  // ------------------ Communities ------------------
+  function renderCommunities(){
+    const box = $('#communityList'); box.innerHTML='';
+    state.communities.forEach(c=>{
+      const card=document.createElement('div'); card.className='card';
+      card.innerHTML = `
+        <div class="row" style="justify-content:space-between">
+          <div>
+            <h3 class="card-title">${c.name}</h3>
+            <div class="muted">メンバー ${c.members}｜Hot: ${c.hot}</div>
+          </div>
+          <button class="btn primary" data-join="${c.id}">参加</button>
         </div>
-        <span class="muted" style="font-size:12px">ID: #${n.id}</span>
+      `;
+      box.appendChild(card);
+    })
+  }
+  $('#communityList').addEventListener('click', (e)=>{
+    const join=e.target.closest('button[data-join]'); if(!join) return;
+    const id=join.dataset.join; const c=state.communities.find(x=>x.id===id);
+    if(!state.myCommunities.includes(c.name)) state.myCommunities.push(c.name);
+    renderMy(); toast(`${c.name} に参加しました`);
+  })
+
+  // ------------------ Issues ------------------
+  function renderIssues(){
+    const box = $('#issueList'); box.innerHTML='';
+    if(!state.issues.length){ box.innerHTML = `<div class="empty">まだ課題がありません。ニュースから「課題化」しましょう。</div>`; return; }
+    // scoring & sort
+    const issues = [...state.issues].sort((a,b)=> (b.impact*b.feasible) - (a.impact*a.feasible));
+    issues.forEach(i=>{
+      const card=document.createElement('div'); card.className='card';
+      card.innerHTML = `
+        <h3 class="card-title">${i.title}</h3>
+        <div class="muted">対象：${i.target||'-'}｜場所：${i.area||'-'}</div>
+        <div class="muted" style="margin-top:6px">KPI候補：${i.kpis.length? i.kpis.join('、') : '未選択'}</div>
+        <div class="row" style="margin-top:10px; gap:10px; align-items:center">
+          <span class="score">影響度</span><input class="slider" type="range" min="1" max="5" value="${i.impact}" data-id="${i.id}" data-kind="impact">
+        </div>
+        <div class="row" style="margin-top:6px; gap:10px; align-items:center">
+          <span class="score">実現性</span><input class="slider" type="range" min="1" max="5" value="${i.feasible}" data-id="${i.id}" data-kind="feasible">
+        </div>
+        <div class="row" style="margin-top:10px; gap:8px">
+          <button class="btn" data-act="similar" data-id="${i.id}">類似課題</button>
+          <button class="btn" data-act="hyp" data-id="${i.id}">仮説デザイン</button>
+        </div>
+      `;
+      box.appendChild(card);
+    })
+  }
+
+  $('#issueList').addEventListener('input', (e)=>{
+    const s = e.target.closest('.slider'); if(!s) return; const id=s.dataset.id; const k=s.dataset.kind; const it=state.issues.find(x=>x.id==id); it[k]=Number(s.value); 
+  });
+  $('#issueList').addEventListener('change', ()=>{ renderIssues(); });
+
+  $('#issueList').addEventListener('click', (e)=>{
+    const b=e.target.closest('button'); if(!b) return; const id=b.dataset.id; const it=state.issues.find(x=>x.id==id); state.selectedIssue=it;
+    if(b.dataset.act==='hyp'){ openHypWith(it); }
+    if(b.dataset.act==='similar'){ showSimilar(it); }
+  })
+
+  $('#newIssueBtn').addEventListener('click', ()=>{ openIssueWith(); });
+
+  function showSimilar(issue){
+    const sim = state.issues.filter(i=> i!==issue && (i.title.includes(issue.title.split(' ')[0]) || i.kpis.some(k=>issue.kpis.includes(k))));
+    if(!sim.length) return toast('類似課題は見つかりませんでした');
+    toast(`類似課題 ${sim.length} 件`);
+  }
+
+  // ------------------ Dashboard ------------------
+  function renderDashboard(){
+    const grid = $('#kpiGrid'); grid.innerHTML='';
+    if(!state.dashboards.length){ grid.innerHTML = `<div class="empty">まだダッシュボードがありません。課題から仮説を作成してください。</div>`; return; }
+    state.dashboards.forEach(k=>{
+      const card=document.createElement('div'); card.className='kpi';
+      const latest=k.data[k.data.length-1];
+      const trend = latest - k.data[Math.max(0,k.data.length-4)];
+      card.innerHTML = `
+        <div class="summary">
+          <h3>${k.title}</h3>
+          <div class="muted">目標 ${k.target}${k.unit||''}</div>
+        </div>
+        <canvas class="spark" data-id="${k.id}"></canvas>
+        <div class="row" style="justify-content:space-between; margin-top:4px">
+          <div class="muted">現在 ${k.current}${k.unit||''}</div>
+          <div>${trend>=0? '↗︎' : '↘︎'} <span class="muted">直近の傾向</span></div>
+        </div>`;
+      grid.appendChild(card);
+      // draw sparkline
+      requestAnimationFrame(()=>drawSparkline($(`canvas[data-id='${k.id}']`), k.data));
+    })
+  }
+
+  function drawSparkline(canvas, data){
+    const ctx = canvas.getContext('2d');
+    const w=canvas.width = canvas.clientWidth; const h=canvas.height=canvas.clientHeight;
+    ctx.clearRect(0,0,w,h);
+    const min=Math.min(...data), max=Math.max(...data); const pad=6;
+    ctx.beginPath(); ctx.lineWidth=2; ctx.strokeStyle = '#0891b2';
+    data.forEach((v,i)=>{
+      const x = pad + (w-2*pad) * (i/(data.length-1));
+      const y = h - pad - ( (v-min)/(max-min||1) ) * (h-2*pad);
+      i? ctx.lineTo(x,y) : ctx.moveTo(x,y);
+    });
+    ctx.stroke();
+  }
+
+  // ------------------ Detail Panel ------------------
+  function openDetailWith(item){
+    state.selectedNews = item;
+    $('#detailSummary').textContent = (item.summary || item.title).slice(0,100)+'…';
+    $('#detailContext').textContent = `解析対象：${item.title||'（未選択）'}`;
+    const tags = item.tags || [];
+    const kpis = [...new Set(tags.flatMap(t=>KPI_LIB[t]||[]))].slice(0,6);
+    $('#detailKpis').innerHTML = kpis.map(k=>`<button class="chip-btn">${k}</button>`).join('');
+    
+    // チャットエリアを初期化
+    $('#chatMessages').innerHTML = `
+      <div style="padding:8px; margin-bottom:8px; background:#e0f2fe; border-radius:8px; font-size:13px;">
+        <strong>AI:</strong> このニュースについて何かご質問はありますか？
       </div>
     `;
-    grid.appendChild(el);
-  });
-}
-
-[q,cat,unreadOnly].forEach(el=>el.addEventListener('input', renderNews));
-clearBtn.addEventListener('click', ()=>{ q.value=''; cat.value=''; unreadOnly.checked=false; renderNews(); });
-renderNews();
-
-// DM機能
-const backDM = document.getElementById('backDM');
-const closeDM = document.getElementById('closeDM');
-const dmTitle = document.getElementById('dmTitle');
-const dmChat = document.getElementById('dmChat');
-const dmInput = document.getElementById('dmInput');
-let currentNews = null;
-let dmStage = 0;
-
-function appendDmMsg(text, who='bot'){
-  const div = document.createElement('div');
-  div.className = 'msg ' + (who==='me'?'me':(who==='sys'?'sys':'bot'));
-  div.textContent = text;
-  dmChat.appendChild(div);
-  dmChat.scrollTop = dmChat.scrollHeight;
-}
-
-// 統合されたイベントリスナー
-grid.addEventListener('click', (e)=>{
-  const dmId = e.target.getAttribute('data-dm');
-  const commId = e.target.getAttribute('data-comm');
-  
-  if(dmId){
-    // DM機能
-    currentNews = NEWS.find(n=> String(n.id)===String(dmId));
-    dmTitle.textContent = `DM：${currentNews.title}`;
-    dmChat.innerHTML = `<div class="msg bot">News Concierge：${currentNews.summary}／質問どうぞ！（保存は匿名OK）</div>`;
-    dmStage = 0;
-    backDM.style.display='flex';
-  } else if(commId){
-    // 一時コミュ機能
-    const n = NEWS.find(x=>x.id===Number(commId));
-    if(!threads[commId]){
-      threads[commId] = [
-        {type:'chat', text:'同じ状況の家庭が多い印象です', by:'住民'},
-        {type:'candidate', text:'夜間帯の空き枠をカレンダーで見たい', by:'NPO'}
-      ];
-    }
-    // 一時コミュタブに切り替え
-    tabs.forEach(x=>x.classList.remove('active'));
-    document.querySelector('[data-view="newsroom"]').classList.add('active');
-    Object.keys(views).forEach(k=>views[k].style.display = (k==='newsroom'?'block':'none'));
     
-    // 一時コミュの内容を更新
-    document.getElementById('view-newsroom').querySelector('h3').textContent = `一時コミュ：${n.title}`;
-    renderNewsroom();
+    openModal('#detailModal');
   }
-});
-
-closeDM.addEventListener('click', ()=> backDM.style.display='none');
-
-document.getElementById('dmSend').addEventListener('click', ()=>{
-  const txt = dmInput.value.trim(); if(!txt) return;
-  appendDmMsg(txt,'me'); dmInput.value='';
-  setTimeout(()=>{
-    if(dmStage===0){
-      appendDmMsg('要点：①当日対応率の改善 ②枠拡充検討 ③来月詳細。保存は匿名OKです。課題として保存しますか？（はい/いいえ）');
-      dmStage=1;
-    }else if(dmStage===1){
-      appendDmMsg('Issue Scribe：課題カード v1 を作成し、G1に回しました。関連コミュがあります。参加しますか？（参加/後で）','sys');
-      dmStage=2;
-    }else{
-      appendDmMsg('Topic Router：#ひとり親コミュ へ招待リンクを発行しました。右上タブ「ニュース一時コミュ」へ移動してください。','sys');
+  $('#detailKpis').addEventListener('click', e=>{ const b=e.target.closest('.chip-btn'); if(!b) return; chip(b); });
+  $('#detailToIssue').addEventListener('click', ()=>{ const picked=$$('#detailKpis .chip-btn.active').map(b=>b.textContent); openIssueWith(state.selectedNews, picked); });
+  
+  // チャット機能
+  $('#sendChat').addEventListener('click', sendChatMessage);
+  $('#chatInput').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      sendChatMessage();
     }
-  },500);
-});
-
-// 一時コミュ機能（ニュースリストから）
-let threads = {}; // newsId -> items
-
-/* ========== 2) News Temporary Community ========== */
-const newsThreads = document.getElementById('newsThreads');
-const newsPost = document.getElementById('newsPost');
-const newsType = document.getElementById('newsType');
-const newsAdd = document.getElementById('newsAdd');
-const newsSummaryNote = document.getElementById('newsSummaryNote');
-
-let newsItems = [
-  {type:'chat', title:'延長枠が埋まりやすい感じします', author:'住民C'},
-  {type:'candidate', title:'夜間帯の空き枠をカレンダー化したい', author:'NPO'},
-];
-
-function renderNewsroom(){
-  if (!newsThreads) return; // 安全チェック
-  newsThreads.innerHTML='';
-  const currentThreads = threads[Object.keys(threads).find(k => 
-    document.getElementById('view-newsroom').querySelector('h3').textContent.includes(NEWS.find(n => n.id === Number(k))?.title)
-  )] || newsItems;
+  });
   
-  currentThreads.forEach(it=>{
-    const el = document.createElement('div');
-    el.className = 'thread';
-    el.innerHTML = `
-      <div class="flex"><span class="tag">${it.type==='chat'?'雑談':'課題候補'}</span><span class="muted">${it.author || it.by}</span></div>
-      <h4>${it.title || it.text}</h4>
-      <div class="actions">
-        ${it.type==='candidate' ? '<button class="btn">📌 候補に残す</button>' : '<button class="btn">💬 返信</button>'}
-      </div>`;
-    newsThreads.appendChild(el);
-  });
-}
-renderNews();
-
-newsAdd.addEventListener('click', ()=>{
-  const t = newsPost.value.trim(); if(!t) return;
-  const currentThreadId = Object.keys(threads).find(k => 
-    document.getElementById('view-newsroom').querySelector('h3').textContent.includes(NEWS.find(n => n.id === Number(k))?.title)
-  );
+  function sendChatMessage() {
+    const input = $('#chatInput');
+    const message = input.value.trim();
+    if (!message) return;
+    
+    // ユーザーメッセージを追加
+    const userMsg = document.createElement('div');
+    userMsg.style.cssText = 'padding:8px; margin-bottom:8px; background:#ffffff; border:1px solid #e2e8f0; border-radius:8px; font-size:13px; text-align:right;';
+    userMsg.innerHTML = `<strong>あなた:</strong> ${message}`;
+    $('#chatMessages').appendChild(userMsg);
+    
+    // 入力フィールドをクリア
+    input.value = '';
+    
+    // AIの応答をシミュレート（モック）
+    setTimeout(() => {
+      const aiMsg = document.createElement('div');
+      aiMsg.style.cssText = 'padding:8px; margin-bottom:8px; background:#e0f2fe; border-radius:8px; font-size:13px;';
+      aiMsg.innerHTML = `<strong>AI:</strong> ${getMockAIResponse(message)}`;
+      $('#chatMessages').appendChild(aiMsg);
+      
+      // チャットエリアを最下部にスクロール
+      const chatArea = $('#chatArea');
+      chatArea.scrollTop = chatArea.scrollHeight;
+    }, 1000);
+  }
   
-  if (currentThreadId) {
-    threads[currentThreadId].unshift({type:newsType.value, text:t, by:'あなた'});
-  } else {
-    newsItems.unshift({type:newsType.value, title:t, author:'あなた'});
+  function getMockAIResponse(message) {
+    const responses = [
+      'その質問について詳しく調べてみますね。',
+      '興味深い視点ですね。他の観点からも考えてみましょう。',
+      'このニュースに関連するデータを確認してみます。',
+      'その課題について、具体的な解決策を提案できます。',
+      'より詳しい情報が必要ですね。追加の調査を行います。'
+    ];
+    return responses[Math.floor(Math.random() * responses.length)];
   }
-  newsPost.value=''; renderNewsroom();
-});
 
-// 初期描画
-renderNewsroom();
+  // ------------------ Issue Modal ------------------
+  function openIssueWith(fromNews=null, kpiPreset=[]){
+    if(fromNews){
+      $('#issueTitle').value = fromNews.title.replace(/[。、]$/,'');
+      $('#issueTarget').value = fromNews.tags.includes('子育て') ? '子育て世帯' : '';
+      $('#issueArea').value = fromNews.tags.includes('移動') ? '駅周辺' : '';
+      $('#issueEvidence').value = fromNews.summary;
+      const suggested=[...new Set(fromNews.tags.flatMap(t=>KPI_LIB[t]||[]))];
+      renderKpiChips($('#issueKpiChips'), suggested, kpiPreset);
+    }else{
+      $('#issueTitle').value = ''; $('#issueTarget').value=''; $('#issueArea').value=''; $('#issueEvidence').value='';
+      renderKpiChips($('#issueKpiChips'), ["平均所要時間(分)","満足度(点)"], []);
+    }
+    openModal('#issueModal');
+  }
 
-document.getElementById('newsSummarize').addEventListener('click', ()=>{
-  const count = newsItems.filter(x=>x.type==='candidate').length;
-  newsSummaryNote.textContent = `課題候補 ${count} 件をカードに集約しました（固定メッセージ）。`;
-});
+  function renderKpiChips(container, list, activeList){
+    container.innerHTML = list.map(k=>`<button class="chip-btn ${activeList.includes(k)?'active':''}">${k}</button>`).join('');
+  }
+  $('#issueKpiChips').addEventListener('click', e=>{ const b=e.target.closest('.chip-btn'); if(!b) return; chip(b); });
 
-/* ========== 3) Community free talk -> candidate elevate ========== */
-const freeFeed = document.getElementById('freeFeed');
-const freeInput = document.getElementById('freeInput');
-const freeSend = document.getElementById('freeSend');
-const candidates = document.getElementById('candidates');
-let freeItems = [
-  {text:'制度の説明が難しくて申請に時間がかかる', by:'住民A', badge:true},
-  {text:'病児往診と病児保育の比較が知りたい', by:'住民B', badge:true},
-];
+  $('#issueSave').addEventListener('click', ()=>{
+    const title=$('#issueTitle').value.trim(); if(!title) return toast('タイトルを入力');
+    const issue={
+      id:String(Date.now()),
+      title,
+      target:$('#issueTarget').value.trim(),
+      area:$('#issueArea').value.trim(),
+      evidence:$('#issueEvidence').value.trim(),
+      kpis: $$('#issueKpiChips .chip-btn.active').map(b=>b.textContent),
+      impact:3, feasible:3
+    };
+    state.issues.push(issue); state.selectedIssue=issue; renderIssues(); renderMy(); toast('課題カードを保存しました');
+    $('#issueModal').removeAttribute('open');
+    // navigate to Issues tab
+    document.querySelector('nav button[data-target="issues"]').click();
+  })
 
-let candidateList = [];
+  // ------------------ Hypothesis Builder ------------------
+  function openHypWith(issue){
+    $('#hypIssue').textContent = `${issue.title}（対象：${issue.target||'未設定'}）`;
+    $('#hypText').value='';
+    renderKpiChips($('#hypKpiChips'), issue.kpis.length? issue.kpis : ["平均所要時間(分)","満足度(点)"], issue.kpis);
+    $('#hypKpiAdd').value='';
+    $('#hypDataSrc').selectedIndex=0;
+    openModal('#hypModal');
+  }
+  $('#hypKpiChips').addEventListener('click', e=>{ const b=e.target.closest('.chip-btn'); if(!b) return; chip(b); });
+  $('#hypFinish').addEventListener('click', ()=>{
+    const issue = state.selectedIssue; if(!issue) return;
+    const hyp = $('#hypText').value.trim() || '仮説（モック）';
+    const kpis = [ ...new Set([ ...$$('#hypKpiChips .chip-btn.active').map(b=>b.textContent), $('#hypKpiAdd').value.trim() ].filter(Boolean)) ];
+    // create 1 KPI card for MVP（最初のKPIだけ）
+    if(!kpis.length) { toast('KPIを選ぶか追加してください'); return; }
+    const title = kpis[0];
+    const base = Math.round(50+Math.random()*30);
+    const seq = Array.from({length:7}, (_,i)=> base + Math.round((Math.random()*6-3) + i*Math.random()*2));
+    state.dashboards.push({ id:'k'+Date.now(), title, unit: title.includes('(% )')? '%' : (title.includes('(分)')?'分':'点'), current:seq[seq.length-1], target: Math.round(base+10), data:seq, note:hyp });
+    renderDashboard(); $('#hypModal').removeAttribute('open'); toast('MVPダッシュボードを追加しました');
+    document.querySelector('nav button[data-target="dash"]').click();
+  })
 
-function renderFree(){
-  freeFeed.innerHTML='';
-  freeItems.forEach((it,idx)=>{
-    const el = document.createElement('div');
-    el.className='thread';
-    el.innerHTML = `
-      <div class="flex"><span class="muted">${it.by}</span><span class="tag">自由発言</span></div>
-      <h4>${it.text}</h4>
-      <div class="actions">
-        ${it.badge?'<span class="tag">課題候補ですか？</span>':''}
-        ${it.badge?`<button class="btn primary" data-promote="${idx}">昇格</button><button class="btn" data-keep="${idx}">保持</button>`:''}
-      </div>`;
-    freeFeed.appendChild(el);
+  // ------------------ My Page ------------------
+  function renderMy(){
+    const wrap = $('#myComms'); wrap.innerHTML = state.myCommunities.map(n=>`<span class="tag">${n}</span>`).join('') || '<span class="muted">未参加</span>';
+    $('#myIssues').innerHTML = state.issues.slice(-5).map(i=>`<div class="card"><div class="row" style="justify-content:space-between"><div><div>${i.title}</div><div class="muted">KPI: ${i.kpis.join('、')||'-'}</div></div><button class="btn" data-open-hyp="${i.id}">仮説へ</button></div></div>`).join('');
+    $('#badgeCount').textContent = state.badges;
+  }
+  $('#myIssues').addEventListener('click', (e)=>{
+    const b=e.target.closest('button[data-open-hyp]'); if(!b) return; const it=state.issues.find(x=>x.id===b.dataset.openHyp); state.selectedIssue=it; openHypWith(it);
+  })
+
+
+
+  // ------------------ Modal close (scrim/btn) ------------------
+  $$('.modal [data-close]').forEach(el=> el.addEventListener('click', closeModal));
+  
+  // ESCキーでモーダルを閉じる
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      const openModal = document.querySelector('.modal[open]');
+      if (openModal) {
+        closeModal({ target: openModal });
+      }
+    }
   });
-}
-function renderCandidates(){
-  candidates.innerHTML='';
-  candidateList.forEach((c,i)=>{
-    const el = document.createElement('div');
-    el.className='thread';
-    el.innerHTML = `
-      <div class="flex"><span class="tag">候補</span><span class="muted">${c.by}</span></div>
-      <h4>${c.text}</h4>
-      <div class="actions">
-        <button class="btn accent" data-approve="${i}">承認→正式カード</button>
-        <button class="btn warn" data-remove="${i}">削除</button>
-      </div>`;
-    candidates.appendChild(el);
-  });
-}
-renderFree(); renderCandidates();
 
-freeSend.addEventListener('click', ()=>{
-  const t = freeInput.value.trim(); if(!t) return;
-  freeItems.unshift({text:t, by:'あなた', badge:true});
-  freeInput.value=''; renderFree();
-});
-
-freeFeed.addEventListener('click', (e)=>{
-  const p = e.target.getAttribute('data-promote');
-  const k = e.target.getAttribute('data-keep');
-  if(p!==null){
-    const idx = Number(p);
-    candidateList.unshift(freeItems[idx]);
-    freeItems[idx].badge=false;
-    renderFree(); renderCandidates();
-  }
-  if(k!==null){
-    const idx = Number(k);
-    freeItems[idx].badge=false;
-    renderFree();
-  }
-});
-
-candidates.addEventListener('click', (e)=>{
-  const ap = e.target.getAttribute('data-approve');
-  const rm = e.target.getAttribute('data-remove');
-  if(ap!==null){
-    alert('正式な課題カードを作成しました（固定メッセージ）\nタブ「課題カード」へどうぞ。');
-  }
-  if(rm!==null){
-    candidateList.splice(Number(rm),1); renderCandidates();
-  }
-});
-
-/* ========== 4) Card detail ========== */
-const cardThreads = document.getElementById('cardThreads');
-const cardInput = document.getElementById('cardInput');
-const cardAdd = document.getElementById('cardAdd');
-let cardItems = [
-  {text:'最新値だと平日午前は対応率が上がってます', type:'data'},
-  {text:'夜間帯は人員足りないリスクあり', type:'risk'},
-  {text:'当日キャンセル枠を近隣配信したい', type:'idea'},
-];
-
-function typeChip(t){
-  if(t==='data') return '<span class="tag">データ更新</span>';
-  if(t==='risk') return '<span class="tag">リスク</span>';
-  return '<span class="tag">新アイデア</span>';
-}
-function renderCard(){
-  cardThreads.innerHTML='';
-  cardItems.forEach(it=>{
-    const el = document.createElement('div');
-    el.className='thread';
-    el.innerHTML = `
-      <div class="flex">${typeChip(it.type)} <span class="muted">コミュ</span></div>
-      <p class="muted" style="margin:0">${it.text}</p>
-      <div class="actions">
-        <button class="btn">👍 共感</button>
-        <button class="btn">要検討</button>
-      </div>`;
-    cardThreads.appendChild(el);
-  });
-}
-renderCard();
-
-cardAdd.addEventListener('click', ()=>{
-  const t = cardInput.value.trim(); if(!t) return;
-  // 簡易：キーワードで分類
-  let ty='idea';
-  if(/上が|更新|数値|%|件/.test(t)) ty='data';
-  if(/リスク|危険|足りない|不足/.test(t)) ty='risk';
-  cardItems.unshift({text:t, type:ty});
-  cardInput.value=''; renderCard();
-});
-
-/* KPI animation demo */
-(function(){
-  const bar = document.getElementById('kpiBar');
-  const now = document.getElementById('kpiNow');
-  let v=48; const goal=80;
-  const timer = setInterval(()=>{
-    v+=1; if(v>=55){v=55; clearInterval(timer)}
-    bar.style.width = v+'%'; now.textContent = v+'%';
-  },25);
-})();
-
-/* Plan modal */
-const backPlan = document.getElementById('backPlan');
-document.getElementById('openPlan').addEventListener('click', ()=> backPlan.style.display='flex');
-document.getElementById('closePlan').addEventListener('click', ()=> backPlan.style.display='none');
-document.getElementById('approvePlan').addEventListener('click', ()=>{
-  document.getElementById('planNote').textContent = 'G2に提出しました（固定メッセージ）';
-});
-
-/* JIT modal */
-const backJIT = document.getElementById('backJIT');
-document.getElementById('openJIT').addEventListener('click', ()=> backJIT.style.display='flex');
-document.getElementById('closeJIT').addEventListener('click', ()=> backJIT.style.display='none');
-
-/* G1/G2/G3 cycle */
-const gStatus = document.getElementById('gStatus');
-let gStage = 1;
-document.getElementById('cycleG').addEventListener('click', ()=>{
-  gStage++;
-  if(gStage===2) gStatus.textContent='現在: G1承認済 → G2承認待ち（SLO=7d）';
-  else if(gStage===3) gStatus.textContent='現在: G2承認済 → G3公開承認待ち（SLO=3d）';
-  else { gStatus.textContent='公開済：ダッシュボード更新・成果テンプレ登録（固定メッセージ）'; gStage=0; }
-});
+  // ------------------ Init ------------------
+  renderNews();
+  renderCommunities();
+  renderIssues();
+  renderDashboard();
+  renderMy();
 </script>
 </body>
 </html>
-
 
