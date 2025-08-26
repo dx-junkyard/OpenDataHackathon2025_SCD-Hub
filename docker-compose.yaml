@@ -12,6 +12,6 @@ services:
   api:
     build: ./mock-api
     container_name: shibuya-demo-api
-    expose:
-      - "8081"
+    ports:
+      - "8000:8000"
 
