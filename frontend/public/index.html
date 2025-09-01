@@ -6,85 +6,56 @@
   <title>課題共創ダッシュボード（スマホMock）</title>
   <style>
     :root{
-      --bg:#f8fafc;           /* slate-50 */
-      --panel:#ffffff;        /* white */
-      --muted:#64748b;        /* slate-500 */
-      --text:#1e293b;         /* slate-800 */
-      --line:#e2e8f0;         /* slate-200 */
-      --accent:#0891b2;       /* cyan-600 */
-      --accent-2:#0284c7;     /* sky-600 */
-      --ok:#059669;           /* emerald-600 */
-      --warn:#d97706;         /* amber-600 */
-      --touch:56px;           /* min touch */
-      --radius:16px;
-      --shadow:0 6px 18px rgba(0,0,0,.1);
+      --bg:#f8fafc; --panel:#ffffff; --muted:#64748b; --text:#1e293b; --line:#e2e8f0;
+      --accent:#0891b2; --accent-2:#0284c7; --ok:#059669; --warn:#d97706;
+      --touch:56px; --radius:16px; --shadow:0 6px 18px rgba(0,0,0,.1);
     }
     *{box-sizing:border-box}
     html,body{height:100%}
-    body{
-      margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
-      background:linear-gradient(180deg, #f1f5f9, #e2e8f0 50%, #f1f5f9 100%); color:var(--text);
-    }
+    body{margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+      background:linear-gradient(180deg, #f1f5f9, #e2e8f0 50%, #f1f5f9 100%); color:var(--text);}
     #app{height:100%; display:flex; flex-direction:column}
-    header{
-      position:sticky; top:0; z-index:5;
-      backdrop-filter:saturate(130%) blur(8px);
-      background:rgba(255,255,255,.9);
-      border-bottom:1px solid var(--line);
-      padding:10px 16px; display:flex; align-items:center; gap:12px;
-    }
+    header{position:sticky; top:0; z-index:5; backdrop-filter:saturate(130%) blur(8px); background:rgba(255,255,255,.9);
+      border-bottom:1px solid var(--line); padding:10px 16px; display:flex; align-items:center; gap:12px;}
     header h1{font-size:16px; margin:0; letter-spacing:.2px}
     header .chip{padding:4px 10px; border-radius:999px; background:#e0f2fe; color:#0c4a6e; border:1px solid #bae6fd; font-size:12px}
-
     main{flex:1; overflow:auto; padding:12px 12px 92px}
 
-    /* Cards */
     .card{background:linear-gradient(180deg,#ffffff,#f8fafc); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:14px;}
     .card + .card{margin-top:12px}
     .card-title{font-size:15px; margin:0 0 6px}
     .muted{color:var(--muted); font-size:13px}
     .row{display:flex; align-items:center; gap:10px}
     .tag{border:1px solid #cbd5e1; color:#475569; background:#f1f5f9; padding:4px 8px; border-radius:999px; font-size:12px}
-    
-    /* News Cards Specific */
     .news-card{display:flex; align-items:flex-start;}
-
     .btn{height:40px; padding:0 14px; border-radius:12px; border:1px solid #cbd5e1; color:#475569; background:#ffffff; cursor:pointer}
     .btn.primary{border-color:#0891b2; background:linear-gradient(180deg,#0891b2,#0e7490); color:#ffffff}
+    .btn.danger{border-color:#dc2626; background:#fee2e2; color:#991b1b}
     .btn.ghost{background:transparent}
     .btn.block{display:block; width:100%}
 
     /* Bottom Nav */
     nav{position:fixed; bottom:0; left:0; right:0; z-index:10; background:rgba(255,255,255,.95); backdrop-filter:blur(8px); border-top:1px solid var(--line)}
-    nav .bar{display:grid; grid-template-columns:repeat(5,1fr);}
+    nav .bar{display:grid; grid-template-columns:repeat(6,1fr);}
     nav button{height:var(--touch); background:transparent; color:var(--muted); border:none; font-size:11px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px}
     nav button[aria-current="page"]{color:var(--accent)}
     .ico{font-size:22px; line-height:0}
 
-
-
-    /* Lists */
     .list{display:flex; flex-direction:column; gap:12px}
-    /* News */
-
-    /* Community */
     .pill-tabs{display:flex; gap:8px; overflow:auto; padding-bottom:8px}
     .pill-tabs .pill{white-space:nowrap; padding:8px 12px; border-radius:999px; border:1px solid #cbd5e1; background:#f8fafc; color:#64748b; font-size:13px}
     .pill[aria-selected="true"]{background:#0891b2; color:#ffffff; border-color:#0891b2}
 
-    /* Issue Board */
     .slider{width:100%}
     .score{font-size:12px; color:#9bb4d1}
     .kanban-hint{font-size:12px; color:#88a3c5}
 
-    /* Dashboard */
     .kpi-grid{display:grid; grid-template-columns:1fr; gap:12px}
     .kpi{padding:12px; border-radius:14px; border:1px solid #e2e8f0; background:linear-gradient(180deg,#ffffff,#f8fafc)}
     .kpi h3{margin:0 0 6px; font-size:14px}
     .spark{width:100%; height:64px}
     .kpi .summary{display:flex; align-items:center; justify-content:space-between}
 
-    /* Modals */
     .modal{position:fixed; inset:0; z-index:20; display:none; background:rgba(0,0,0,.3);}
     .modal[open]{display:flex; align-items:flex-end; justify-content:center;}
     .modal .scrim{position:absolute; inset:0; background:transparent; cursor:pointer;}
@@ -105,8 +76,8 @@
     .toast[show]{display:block}
 
     .divider{height:1px; background:#e2e8f0; margin:10px 0}
-
     .empty{border:1px dashed #cbd5e1; padding:16px; border-radius:16px; text-align:center; color:#64748b; font-size:14px}
+    .bubble{padding:8px 10px; border-radius:10px; border:1px solid #e2e8f0; background:#fff; margin:4px 0; font-size:13px}
   </style>
 </head>
 <body>
@@ -130,14 +101,37 @@
       <div id="newsList" class="list"></div>
     </section>
 
-    <!-- COMMUNITY -->
-    <section id="screen-community" class="screen" data-title="コミュニティ" hidden>
+    <!-- COMMUNITY JOIN -->
+    <section id="screen-community-join" class="screen" data-title="コミュ参加" hidden>
       <div class="pill-tabs" id="commTabs">
         <button class="pill" data-mode="popular" aria-selected="true">人気</button>
         <button class="pill" data-mode="new">新着</button>
         <button class="pill" data-mode="suggest">おすすめ</button>
       </div>
       <div id="communityList" class="list"></div>
+    </section>
+
+    <!-- COMMUNITY DETAIL -->
+    <section id="screen-community" class="screen" data-title="コミュ" hidden>
+      <div class="card" id="communityHead">
+        <h3 class="card-title" id="commTitle">コミュニティ</h3>
+        <div class="muted" id="commMeta"></div>
+        <div class="row" style="margin-top:8px; gap:8px;">
+          <button class="btn" id="switchCommunity">他のコミュを見る</button>
+          <button class="btn" id="newThreadBtn">＋ スレッド作成</button>
+          <button class="btn primary" id="newIssueInComm">＋ 課題を作成</button>
+        </div>
+      </div>
+      <div class="pill-tabs" id="commDetailTabs" style="margin-top:12px">
+        <button class="pill" data-tab="threads" aria-selected="true">スレッド</button>
+        <button class="pill" data-tab="issues">課題カード</button>
+      </div>
+      <div id="commThreadsTab" class="comm-tab-content">
+        <div id="threadList" class="list"></div>
+      </div>
+      <div id="commIssuesTab" class="comm-tab-content" hidden>
+        <div id="communityIssueList" class="list"></div>
+      </div>
     </section>
 
     <!-- ISSUES -->
@@ -179,13 +173,12 @@
     <div class="bar">
       <button data-target="news" aria-current="page"><div class="ico">📰</div>ニュース</button>
       <button data-target="community"><div class="ico">👥</div>コミュ</button>
+      <button data-target="community-join"><div class="ico">➕</div>コミュ参加</button>
       <button data-target="issues"><div class="ico">🗂️</div>課題</button>
       <button data-target="dash"><div class="ico">📊</div>ダッシュ</button>
       <button data-target="me"><div class="ico">👤</div>マイ</button>
     </div>
   </nav>
-
-
 
   <!-- Detail Modal -->
   <dialog id="detailModal" class="modal" aria-label="詳細情報">
@@ -201,13 +194,9 @@
       <div id="detailContext" class="helper">ニュースの詳細情報とAI分析</div>
       <div class="divider"></div>
       <div class="card">
-        <h3 class="card-title">要約</h3>
+        <h3 class="card-title">概要</h3>
         <div id="detailSummary" class="muted"></div>
-      </div>
-
-      <div class="card">
-        <h3 class="card-title">KPI候補</h3>
-        <div id="detailKpis" class="chips"></div>
+        <div id="detailLink" style="margin-top:8px"></div>
       </div>
       <div class="card">
         <h3 class="card-title">AIとチャット</h3>
@@ -215,7 +204,7 @@
           <div id="chatMessages"></div>
         </div>
         <div class="row" style="gap:8px">
-          <input type="text" id="chatInput" placeholder="AIに質問する..." style="flex:1; margin:0;">
+          <input type="text" id="chatInput" placeholder="自由に入力してください..." style="flex:1; margin:0;">
           <button class="btn primary" id="sendChat">送信</button>
         </div>
       </div>
@@ -295,71 +284,187 @@
     </div>
   </dialog>
 
+  <!-- Thread View Modal -->
+  <dialog id="threadModal" class="modal" aria-label="スレッド">
+    <div class="scrim" data-close></div>
+    <div class="panel">
+      <header class="row" style="justify-content:space-between">
+        <h2 id="threadTitle">スレッド</h2>
+        <button class="btn ghost" data-close>閉じる</button>
+      </header>
+      <div id="threadMessages" style="max-height:50vh; overflow:auto"></div>
+      <div class="divider"></div>
+      <div class="row" style="gap:8px">
+        <input id="threadInput" type="text" placeholder="メッセージを入力..." style="flex:1;">
+        <button class="btn primary" id="threadSend">送信</button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- New Thread Modal -->
+  <dialog id="newThreadModal" class="modal" aria-label="新規スレッド作成">
+    <div class="scrim" data-close></div>
+    <div class="panel">
+      <header class="row" style="justify-content:space-between">
+        <h2>新規スレッド</h2>
+        <button class="btn ghost" data-close>閉じる</button>
+      </header>
+      <div class="field">
+        <label>タイトル</label>
+        <input id="newThreadTitle" type="text" placeholder="例：送迎時のベビーカー導線について" />
+      </div>
+      <div class="field">
+        <label>最初のメッセージ（任意）</label>
+        <textarea id="newThreadFirstMsg" placeholder="話題のきっかけを入力..."></textarea>
+      </div>
+      <div class="row" style="gap:8px; margin-top:12px">
+        <button class="btn" data-close>キャンセル</button>
+        <button class="btn primary" id="createThreadBtn">作成</button>
+      </div>
+    </div>
+  </dialog>
+
   <div class="toast" id="toast"></div>
 </div>
 
 <script>
   // ------------------ Mock Data ------------------
-  const state = {
+  // ------------------ Mock Data ------------------
+const state = {
+  selectedNews: null,
+  selectedIssue: null,
+  selectedCommunity: null,
+  selectedThreadId: null,
+  badges: 0,
+  // ストーリーでは子育てコミュに参加している想定
+  myCommunities: ["子育て@渋谷"],
+  news: [],
+  communities: [
+    { id:"c1", name:"子育て@渋谷", members:1420, hot:"授乳・おむつ替えスポットの不足" },
+    { id:"c2", name:"観光と回遊性", members:980,  hot:"表参道の混雑時間帯" },
+    { id:"c3", name:"歩きやすい渋谷", members:1540, hot:"坂道・段差マップ" }
+  ],
+  // コミュ別スレッド（ストーリーに沿って更新）
+  threads: {
+    c1: [
+      { id:"t_need",  title:"授乳・おむつ替えスペースの不足について", replies:0 },
+      { id:"t_survey",title:"学生ボランティアによる実態調査の提案", replies:0 },
+      { id:"t_mall",  title:"商業施設と連携した試験設置の検討",     replies:0 }
+    ],
+    c2: [{ id:"t3", title:"回遊サインの見やすさ検証", replies:9 }],
+    c3: [{ id:"t4", title:"坂道での押しやすいルート", replies:5 }]
+  },
+  // スレッドごとのメッセージ（保護者／学生／商業施設／区職員のやり取り）
+  messages: {
+    t_need: [
+      { user:"👩 保護者", text:"駅周辺に授乳スペースがもっと欲しいです。外出中に困りました。" },
+      { user:"🧑‍💼 区職員", text:"現状の設置場所と混雑状況を把握したいです。情報提供お願いします。" },
+      { user:"🤖 AI", text:"課題候補：『安心拠点（授乳・おむつ替え）のスポット設置数が不足』" }
+    ],
+    t_survey: [
+      { user:"🧑‍🎓 学生", text:"調査ボランティア可能です。既存スポットの利用実態を1週間計測します。" },
+      { user:"🤖 AI", text:"KPI候補：スポット設置数／日別平均利用件数／満足度（5段階）" }
+    ],
+    t_mall: [
+      { user:"🏬 商業施設", text:"1か所での試験設置を検討可能です。利用実績データを共有ください。" },
+      { user:"🧑‍💼 区職員", text:"重点地域の候補に入れます。実証後に方針化を検討します。" }
+    ],
+    t3:[{user:"👤", text:"矢印が小さいという声あり"}],
+    t4:[{user:"👤", text:"坂を避けるルートの地図を共有"}]
+  },
+  // 既に1枚、ストーリーの課題カードを作成済みに
+  issues: [
+  ],
+  // ダッシュボード（小さな実証の可視化を想定）
+  dashboards: [
+    {
+      id: "k_usage",
+      title: "日別平均利用件数",
+      unit: "件",
+      current: 42, target: 50,
+      data: [25, 28, 30, 34, 37, 40, 42],
+      note: "学生ボランティア調査＋商業施設での試験設置の計測値（モック）"
+    },
+    {
+      id: "k_cs",
+      title: "満足度（5段階）",
+      unit: "点",
+      current: 4.3, target: 4.5,
+      data: [3.6, 3.8, 3.9, 4.0, 4.1, 4.2, 4.3],
+      note: "QRアンケートによる評価（モック）"
+    }
+  ]
+};
+
+// KPIライブラリ（子育てカテゴリに今回のKPIも載るよう拡張）
+const KPI_LIB = {
+  子育て:["スポット設置数","日別平均利用件数","満足度（5段階）","ベビーカー通行満足度(点)","段差箇所件数"],
+  観光:["観光満足度(点)","回遊距離(㎞)","滞在時間(分)"],
+  移動:["平均所要時間(分)","移動成功率(%)","危険箇所報告数"],
+  安全:["ヒヤリハット報告数","混雑度指数","歩道幅不足箇所"]
+};
+
+/*
+  const state_old = {
     selectedNews: null,
     selectedIssue: null,
+    selectedCommunity: null,
+    selectedThreadId: null,
     badges: 0,
     myCommunities: [],
-    news:[
-      {id:1, title:"保育園の送迎混雑の時間帯を分散へ", summary:"朝8時台に送迎が集中する保育園で、導線の改善と時差利用の試行が始まりました。", tags:["子育て","安全"], thumb:""},
-      {id:2, title:"原宿駅周辺の歩行回遊を促進", summary:"歩行者空間の再編で、回遊ルートの案内サインを実証。観光満足度の向上を目指します。", tags:["観光","移動"], thumb:""},
-      {id:3, title:"坂道移動の負担軽減へ ルート案内の実験", summary:"ベビーカーや高齢者に配慮した段差・勾配回避ルートを提示する実証。", tags:["移動","安全","子育て"], thumb:""}
-    ],
+    news:[],
     communities:[
       {id:"c1", name:"子育て@渋谷", members:1320, hot:"送迎導線の改善"},
-      {id:"c2", name:"観光と回遊性", members:980, hot:"表参道の混雑時間帯"},
+      {id:"c2", name:"観光と回遊性", members:980,  hot:"表参道の混雑時間帯"},
       {id:"c3", name:"歩きやすい渋谷", members:1540, hot:"坂道・段差マップ"}
     ],
+    // コミュ別スレッド
+    threads:{
+      c1:[{id:"t1", title:"送迎導線の現状共有", replies:12},{id:"t2", title:"混雑時の安全確保アイデア", replies:7}],
+      c2:[{id:"t3", title:"回遊サインの見やすさ検証", replies:9}],
+      c3:[{id:"t4", title:"坂道での押しやすいルート", replies:5}]
+    },
+    // スレッドごとのメッセージ（モック）
+    messages:{
+      t1:[{user:"👤", text:"朝8:15が一番混みます"}, {user:"👤", text:"入口を広げるだけでも違いそう"}],
+      t2:[{user:"👤", text:"誘導スタッフの配置案"}, {user:"👤", text:"カラーコーンで一時レーン化"}],
+      t3:[{user:"👤", text:"矢印が小さいという声あり"}],
+      t4:[{user:"👤", text:"坂を避けるルートの地図を共有"}]
+    },
     issues:[],
-    dashboards:[
-      {id:"k1", title:"観光回遊ルートの満足度", unit:"pt", current:78, target:85, data:[62,65,66,70,71,75,78], note:"案内サインの実証"}
-    ]
+    dashboards:[]
+    //  {id:"k1", title:"観光回遊ルートの満足度", unit:"pt", current:78, target:85, data:[62,65,66,70,71,75,78], note:"案内サインの実証"}
+    //]
   };
 
   const KPI_LIB = {
     子育て:["送迎待ち時間(分)","ベビーカー通行満足度(点)","段差箇所件数"],
-    観光:["観光満足度(点)","回遊距離(㎞)","滞在時間(分)"],
+    観光回遊:["観光満足度(点)","回遊距離(㎞)","滞在時間(分)"],
     移動:["平均所要時間(分)","移動成功率(%)","危険箇所報告数"],
     安全:["ヒヤリハット報告数","混雑度指数","歩道幅不足箇所"]
   };
+*/
+
 
   // ------------------ Helpers ------------------
   const $ = (q, root=document)=>root.querySelector(q);
   const $$ = (q, root=document)=>Array.from(root.querySelectorAll(q));
   function toast(msg){ const t=$('#toast'); t.textContent=msg; t.setAttribute('show',''); setTimeout(()=>t.removeAttribute('show'), 1700); }
-  function openModal(sel){ 
-    const d=$(sel); 
-    if(d) {
-      d.setAttribute('open',''); 
-      // スクロール防止
-      document.body.style.overflow = 'hidden';
-    }
-  }
-  function closeModal(e){ 
-    const d=e.target.closest('.modal'); 
-    if(!d) return; 
-    d.removeAttribute('open'); 
-    // スクロール復活
-    document.body.style.overflow = '';
-    document.body.style.position = '';
-  }
+  function openModal(sel){ const d=$(sel); if(d){ d.setAttribute('open',''); document.body.style.overflow='hidden'; } }
+  function closeModal(e){ const d=e.target.closest('.modal'); if(!d) return; d.removeAttribute('open'); document.body.style.overflow=''; document.body.style.position=''; }
   function chip(el){ el.classList.toggle('active'); }
+  function uid(prefix='id'){ return prefix + Math.random().toString(36).slice(2,8); }
 
   // ------------------ Navigation ------------------
-  $$('#app nav button').forEach(btn=>btn.addEventListener('click',()=>{
-    const target = btn.dataset.target; // news/community/issues/dash/me
+  function navigate(target){
     $$('.screen').forEach(s=>s.hidden = s.id!==`screen-${target}`);
     $$('#app nav button').forEach(b=>b.removeAttribute('aria-current'));
-    btn.setAttribute('aria-current','page');
-    // header title update
+    const navBtn = document.querySelector(`nav button[data-target="${target}"]`);
+    if(navBtn) navBtn.setAttribute('aria-current','page');
     const title = $(`#screen-${target}`).dataset.title || '';
     $('header h1').textContent = `課題共創ダッシュボード — ${title}`;
-  }));
+  }
+  $$('#app nav button').forEach(btn=>btn.addEventListener('click',()=>navigate(btn.dataset.target)));
 
   // ------------------ News ------------------
   function renderNews(tag='all'){
@@ -380,53 +485,208 @@
       box.appendChild(card);
     })
   }
-  
   $('#newsFilters').addEventListener('click', (e)=>{
     const pill=e.target.closest('.pill'); if(!pill) return; $$('#newsFilters .pill').forEach(p=>p.removeAttribute('aria-selected')); pill.setAttribute('aria-selected','true');
     renderNews(pill.dataset.tag);
   });
-
   $('#newsList').addEventListener('click', (e)=>{
     const btn = e.target.closest('button'); if(!btn) return;
     const id = Number(btn.dataset.id); const item = state.news.find(n=>n.id===id); state.selectedNews = item;
     if(btn.dataset.act==='detail') { openDetailWith(item); }
   });
 
-  // ------------------ Communities ------------------
+  // ------------------ Communities (JOIN LIST) ------------------
   function renderCommunities(){
     const box = $('#communityList'); box.innerHTML='';
     state.communities.forEach(c=>{
-      const card=document.createElement('div'); card.className='card';
+      const isMember = state.myCommunities.includes(c.name);
+      const btnClass = isMember ? 'btn danger' : 'btn primary';
+      const btnText = isMember ? '退会' : '参加';
+      const card=document.createElement('div'); card.className='card'; card.style.cursor='pointer';
       card.innerHTML = `
         <div class="row" style="justify-content:space-between">
           <div>
             <h3 class="card-title">${c.name}</h3>
             <div class="muted">メンバー ${c.members}｜Hot: ${c.hot}</div>
           </div>
-          <button class="btn primary" data-join="${c.id}">参加</button>
-        </div>
-      `;
+          <button class="${btnClass}" data-join="${c.id}">${btnText}</button>
+        </div>`;
+      card.addEventListener('click',(ev)=>{ if(ev.target.closest('[data-join]')) return; selectCommunity(c); navigate('community'); });
       box.appendChild(card);
     })
   }
   $('#communityList').addEventListener('click', (e)=>{
-    const join=e.target.closest('button[data-join]'); if(!join) return;
-    const id=join.dataset.join; const c=state.communities.find(x=>x.id===id);
-    if(!state.myCommunities.includes(c.name)) state.myCommunities.push(c.name);
-    renderMy(); toast(`${c.name} に参加しました`);
-  })
+    const btn=e.target.closest('button[data-join]'); if(!btn) return;
+    const id=btn.dataset.join; const c=state.communities.find(x=>x.id===id);
+    const isMember = state.myCommunities.includes(c.name);
+    if(!isMember){
+      state.myCommunities.push(c.name);
+      btn.classList.remove('primary'); btn.classList.add('danger'); btn.textContent = '退会';
+      selectCommunity(c); renderMy(); toast(`${c.name} に参加しました`); navigate('community');
+    }else{
+      if(confirm('退会しますか？')){
+        state.myCommunities = state.myCommunities.filter(n=>n!==c.name);
+        btn.classList.remove('danger'); btn.classList.add('primary'); btn.textContent = '参加';
+        renderMy(); toast(`${c.name} を退会しました`);
+      }
+    }
+  });
 
-  // ------------------ Issues ------------------
-  function renderIssues(){
-    const box = $('#issueList'); box.innerHTML='';
-    if(!state.issues.length){ box.innerHTML = `<div class="empty">まだ課題がありません。ニュースから「課題化」しましょう。</div>`; return; }
-    // scoring & sort
-    const issues = [...state.issues].sort((a,b)=> (b.impact*b.feasible) - (a.impact*a.feasible));
-    issues.forEach(i=>{
+  function selectCommunity(comm){
+    state.selectedCommunity = comm;
+    $('#commTitle').textContent = comm.name;
+    $('#commMeta').textContent = `メンバー ${comm.members}｜Hot: ${comm.hot}`;
+    renderThreads();
+    renderCommunityIssues();
+  }
+
+  // ------------------ Community Detail: Threads & Issues ------------------
+  function renderThreads(){
+    const box = $('#threadList'); box.innerHTML='';
+    const comm = state.selectedCommunity;
+    if(!comm){ box.innerHTML = `<div class="empty">コミュニティが選択されていません</div>`; return; }
+    const list = state.threads[comm.id] || [];
+    if(!list.length){ box.innerHTML = `<div class="empty">まだスレッドがありません</div>`; return; }
+    list.forEach(t=>{
+      const card=document.createElement('div'); card.className='card';
+      card.innerHTML = `<div class="row" style="justify-content:space-between">
+        <div><div>${t.title}</div><div class="muted">返信 ${t.replies}</div></div>
+        <button class="btn" data-open-thread="${t.id}">開く</button>
+      </div>`;
+      box.appendChild(card);
+    });
+  }
+
+  // スレッド「開く」実装
+  $('#threadList').addEventListener('click', (e)=>{
+    const b = e.target.closest('button[data-open-thread]');
+    if(!b) return;
+    const threadId = b.dataset.openThread;
+    openThread(threadId);
+  });
+
+  function openThread(threadId){
+    const comm = state.selectedCommunity;
+    if(!comm) return;
+    const t = (state.threads[comm.id] || []).find(x=>x.id===threadId);
+    if(!t) return toast('スレッドが見つかりません');
+    state.selectedThreadId = threadId;
+    $('#threadTitle').textContent = t.title;
+    renderThreadMessages(threadId);
+    openModal('#threadModal');
+  }
+
+  function renderThreadMessages(threadId){
+    const box = $('#threadMessages'); box.innerHTML='';
+    const msgs = state.messages[threadId] || [];
+    if(!msgs.length){ box.innerHTML = `<div class="empty">まだメッセージがありません</div>`; return; }
+    msgs.forEach(m=>{
+      const div = document.createElement('div');
+      div.className = 'bubble';
+      div.textContent = `${m.user} ${m.text}`;
+      box.appendChild(div);
+    });
+  }
+
+  // 返信送信
+  $('#threadSend').addEventListener('click', ()=>{
+    const inp = $('#threadInput');
+    const txt = inp.value.trim();
+    if(!txt) return;
+    const th = state.selectedThreadId;
+    state.messages[th] = state.messages[th] || [];
+    state.messages[th].push({user:'👤', text:txt});
+    inp.value = '';
+    renderThreadMessages(th);
+    // 返信数を更新
+    updateReplyCount(th);
+  });
+
+  function updateReplyCount(threadId){
+    // 現在コミュのthreads配列のrepliesをmessages長に合わせる
+    const comm = state.selectedCommunity; if(!comm) return;
+    const arr = state.threads[comm.id] || [];
+    const th = arr.find(x=>x.id===threadId); if(!th) return;
+    th.replies = (state.messages[threadId]||[]).length;
+    renderThreads(); // 表示更新
+  }
+
+  // 新規スレッド作成
+  $('#newThreadBtn').addEventListener('click', ()=>{
+    if(!state.selectedCommunity){ toast('コミュニティを選択してください'); return; }
+    $('#newThreadTitle').value = '';
+    $('#newThreadFirstMsg').value = '';
+    openModal('#newThreadModal');
+  });
+
+  $('#createThreadBtn').addEventListener('click', ()=>{
+    const title = $('#newThreadTitle').value.trim();
+    const first = $('#newThreadFirstMsg').value.trim();
+    if(!title) return toast('タイトルを入力してください');
+    const comm = state.selectedCommunity;
+    const id = uid('t');
+    state.threads[comm.id] = state.threads[comm.id] || [];
+    state.threads[comm.id].unshift({id, title, replies: first?1:0});
+    if(first){
+      state.messages[id] = [{user:'👤', text:first}];
+    }else{
+      state.messages[id] = [];
+    }
+    toast('スレッドを作成しました');
+    document.querySelector('#newThreadModal').removeAttribute('open');
+    renderThreads();
+    openThread(id);
+  });
+
+  function renderCommunityIssues(){
+    const box = $('#communityIssueList'); box.innerHTML='';
+    const comm = state.selectedCommunity;
+    if(!comm){ box.innerHTML = `<div class="empty">コミュニティが選択されていません</div>`; return; }
+    const items = state.issues.filter(i=> i.communityId === comm.id);
+    if(!items.length){ box.innerHTML = `<div class="empty">このコミュの課題カードはまだありません</div>`; return; }
+    items.forEach(i=>{
       const card=document.createElement('div'); card.className='card';
       card.innerHTML = `
         <h3 class="card-title">${i.title}</h3>
         <div class="muted">対象：${i.target||'-'}｜場所：${i.area||'-'}</div>
+        <div class="muted" style="margin-top:6px">KPI候補：${i.kpis.length? i.kpis.join('、') : '未選択'}</div>
+        <div class="row" style="margin-top:10px; gap:8px">
+          <button class="btn" data-act="similar" data-id="${i.id}">類似課題</button>
+          <button class="btn" data-act="hyp" data-id="${i.id}">仮説デザイン</button>
+        </div>`;
+      box.appendChild(card);
+    });
+  }
+
+  $('#switchCommunity').addEventListener('click', ()=> navigate('community-join'));
+  $('#newIssueInComm').addEventListener('click', ()=> openIssueWith()); // 選択中コミュにひも付け
+  
+  // コミュ詳細タブ切り替え
+  $('#commDetailTabs').addEventListener('click', (e)=>{
+    const pill = e.target.closest('.pill');
+    if(!pill) return;
+    
+    // タブボタンの状態を更新
+    $$('#commDetailTabs .pill').forEach(p=>p.removeAttribute('aria-selected'));
+    pill.setAttribute('aria-selected','true');
+    
+    // タブコンテンツを切り替え
+    const tabName = pill.dataset.tab;
+    $$('.comm-tab-content').forEach(tab=>tab.hidden = true);
+    $(`#comm${tabName.charAt(0).toUpperCase() + tabName.slice(1)}Tab`).hidden = false;
+  });
+
+  // ------------------ Issues (All) ------------------
+  function renderIssues(){
+    const box = $('#issueList'); box.innerHTML='';
+    if(!state.issues.length){ box.innerHTML = `<div class="empty">まだ課題がありません。ニュースから「課題化」しましょう。</div>`; return; }
+    const issues = [...state.issues].sort((a,b)=> (b.impact*b.feasible) - (a.impact*a.feasible));
+    issues.forEach(i=>{
+      const cName = (state.communities.find(c=>c.id===i.communityId)||{}).name || '未所属';
+      const card=document.createElement('div'); card.className='card';
+      card.innerHTML = `
+        <h3 class="card-title">${i.title}</h3>
+        <div class="muted">コミュ：${cName}｜対象：${i.target||'-'}｜場所：${i.area||'-'}</div>
         <div class="muted" style="margin-top:6px">KPI候補：${i.kpis.length? i.kpis.join('、') : '未選択'}</div>
         <div class="row" style="margin-top:10px; gap:10px; align-items:center">
           <span class="score">影響度</span><input class="slider" type="range" min="1" max="5" value="${i.impact}" data-id="${i.id}" data-kind="impact">
@@ -437,23 +697,19 @@
         <div class="row" style="margin-top:10px; gap:8px">
           <button class="btn" data-act="similar" data-id="${i.id}">類似課題</button>
           <button class="btn" data-act="hyp" data-id="${i.id}">仮説デザイン</button>
-        </div>
-      `;
+        </div>`;
       box.appendChild(card);
     })
   }
-
   $('#issueList').addEventListener('input', (e)=>{
     const s = e.target.closest('.slider'); if(!s) return; const id=s.dataset.id; const k=s.dataset.kind; const it=state.issues.find(x=>x.id==id); it[k]=Number(s.value); 
   });
   $('#issueList').addEventListener('change', ()=>{ renderIssues(); });
-
   $('#issueList').addEventListener('click', (e)=>{
     const b=e.target.closest('button'); if(!b) return; const id=b.dataset.id; const it=state.issues.find(x=>x.id==id); state.selectedIssue=it;
     if(b.dataset.act==='hyp'){ openHypWith(it); }
     if(b.dataset.act==='similar'){ showSimilar(it); }
   })
-
   $('#newIssueBtn').addEventListener('click', ()=>{ openIssueWith(); });
 
   function showSimilar(issue){
@@ -481,11 +737,9 @@
           <div>${trend>=0? '↗︎' : '↘︎'} <span class="muted">直近の傾向</span></div>
         </div>`;
       grid.appendChild(card);
-      // draw sparkline
       requestAnimationFrame(()=>drawSparkline($(`canvas[data-id='${k.id}']`), k.data));
     })
   }
-
   function drawSparkline(canvas, data){
     const ctx = canvas.getContext('2d');
     const w=canvas.width = canvas.clientWidth; const h=canvas.height=canvas.clientHeight;
@@ -503,91 +757,80 @@
   // ------------------ Detail Panel ------------------
   function openDetailWith(item){
     state.selectedNews = item;
-    $('#detailSummary').textContent = (item.summary || item.title).slice(0,100)+'…';
+    const overview = [
+      item.audience && `対象者：${item.audience}`,
+      item.apply && `条件・申込：${item.apply}`,
+      item.summary && `内容：${item.summary}`
+    ].filter(Boolean).join('\n');
+    $('#detailSummary').textContent = overview;
+    $('#detailSummary').style.whiteSpace = 'pre-line';
     $('#detailContext').textContent = `解析対象：${item.title||'（未選択）'}`;
-    const tags = item.tags || [];
-    const kpis = [...new Set(tags.flatMap(t=>KPI_LIB[t]||[]))].slice(0,6);
-    $('#detailKpis').innerHTML = kpis.map(k=>`<button class="chip-btn">${k}</button>`).join('');
-    
-    // チャットエリアを初期化
+    const url = item.url || item.URL?.items || '';
+    $('#detailLink').innerHTML = url ? `<a href="${url}" target="_blank" rel="noopener">公式ページを開く</a>` : '';
     $('#chatMessages').innerHTML = `
       <div style="padding:8px; margin-bottom:8px; background:#e0f2fe; border-radius:8px; font-size:13px;">
-        <strong>AI:</strong> このニュースについて何かご質問はありますか？
-      </div>
-    `;
-    
+        <strong>AI:</strong> 気になる点や意見があれば教えてください
+      </div>`;
     openModal('#detailModal');
   }
-  $('#detailKpis').addEventListener('click', e=>{ const b=e.target.closest('.chip-btn'); if(!b) return; chip(b); });
-  $('#detailToIssue').addEventListener('click', ()=>{ const picked=$$('#detailKpis .chip-btn.active').map(b=>b.textContent); openIssueWith(state.selectedNews, picked); });
-  
-  // チャット機能
+  $('#detailToIssue').addEventListener('click', ()=>{ openIssueWith(state.selectedNews, []); });
+
+  // チャット（モック）
   $('#sendChat').addEventListener('click', sendChatMessage);
-  $('#chatInput').addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-      sendChatMessage();
-    }
-  });
-  
+  $('#chatInput').addEventListener('keypress', (e) => { if (e.key === 'Enter') { sendChatMessage(); } });
   function sendChatMessage() {
-    const input = $('#chatInput');
-    const message = input.value.trim();
-    if (!message) return;
-    
-    // ユーザーメッセージを追加
+    const input = $('#chatInput'); const message = input.value.trim(); if (!message) return;
     const userMsg = document.createElement('div');
     userMsg.style.cssText = 'padding:8px; margin-bottom:8px; background:#ffffff; border:1px solid #e2e8f0; border-radius:8px; font-size:13px; text-align:right;';
-    userMsg.innerHTML = `<strong>あなた:</strong> ${message}`;
-    $('#chatMessages').appendChild(userMsg);
-    
-    // 入力フィールドをクリア
+    userMsg.innerHTML = `<strong>あなた:</strong> ${message}`; $('#chatMessages').appendChild(userMsg);
     input.value = '';
-    
-    // AIの応答をシミュレート（モック）
     setTimeout(() => {
       const aiMsg = document.createElement('div');
       aiMsg.style.cssText = 'padding:8px; margin-bottom:8px; background:#e0f2fe; border-radius:8px; font-size:13px;';
       aiMsg.innerHTML = `<strong>AI:</strong> ${getMockAIResponse(message)}`;
       $('#chatMessages').appendChild(aiMsg);
-      
-      // チャットエリアを最下部にスクロール
-      const chatArea = $('#chatArea');
-      chatArea.scrollTop = chatArea.scrollHeight;
-    }, 1000);
+      const chatArea = $('#chatArea'); chatArea.scrollTop = chatArea.scrollHeight;
+    }, 600);
   }
-  
   function getMockAIResponse(message) {
     const responses = [
-      'その質問について詳しく調べてみますね。',
-      '興味深い視点ですね。他の観点からも考えてみましょう。',
-      'このニュースに関連するデータを確認してみます。',
-      'その課題について、具体的な解決策を提案できます。',
-      'より詳しい情報が必要ですね。追加の調査を行います。'
+      'はい、『赤ちゃん・ふらっと』は授乳やおむつ替えができる安心拠点ですが、配置は限られています。課題カードを作成しますか？',
+      '課題カードを作成しました。'
     ];
-    return responses[Math.floor(Math.random() * responses.length)];
+  
+    // 「このサービス」で始まる場合は response[0]、それ以外は response[1]
+    if (message.startsWith("このサービス")) {
+      return responses[0];
+    } else {
+      return responses[1];
+    }
   }
 
-  // ------------------ Issue Modal ------------------
+  // ------------------ Issue Modal old------------------
   function openIssueWith(fromNews=null, kpiPreset=[]){
     if(fromNews){
       $('#issueTitle').value = fromNews.title.replace(/[。、]$/,'');
-      $('#issueTarget').value = fromNews.tags.includes('子育て') ? '子育て世帯' : '';
+      //$('#issueTarget').value = fromNews.tags.includes('子育て') ? '子育て世帯' : '';
+      const tgParts = fromNews.tags.flatMap(t => String(t).split(/[・/]/));
+      $('#issueTarget').value = tgParts.includes('子育て') ? '子育て世帯' : '';
       $('#issueArea').value = fromNews.tags.includes('移動') ? '駅周辺' : '';
       $('#issueEvidence').value = fromNews.summary;
-      const suggested=[...new Set(fromNews.tags.flatMap(t=>KPI_LIB[t]||[]))];
-      renderKpiChips($('#issueKpiChips'), suggested, kpiPreset);
+      //const suggested=[...new Set(fromNews.tags.flatMap(t=>KPI_LIB[t]||[]))];
+      //renderKpiChips($('#issueKpiChips'), suggested, kpiPreset);
+      // タグを分割して基底カテゴリ（子育て・観光・移動・安全）にマッピング
+      const parts = fromNews.tags.flatMap(t => String(t).split(/[・/]/));
+      const suggested = [...new Set(parts.flatMap(p => KPI_LIB[p] || []))];
+      const defaults = ["スポット設置数","日別平均利用件数","満足度（5段階）"];
+      const list = suggested.length ? [...defaults, ...suggested] : defaults;
+      renderKpiChips($('#issueKpiChips'), list, kpiPreset);
     }else{
       $('#issueTitle').value = ''; $('#issueTarget').value=''; $('#issueArea').value=''; $('#issueEvidence').value='';
       renderKpiChips($('#issueKpiChips'), ["平均所要時間(分)","満足度(点)"], []);
     }
     openModal('#issueModal');
   }
-
-  function renderKpiChips(container, list, activeList){
-    container.innerHTML = list.map(k=>`<button class="chip-btn ${activeList.includes(k)?'active':''}">${k}</button>`).join('');
-  }
+  function renderKpiChips(container, list, activeList){ container.innerHTML = list.map(k=>`<button class="chip-btn ${activeList.includes(k)?'active':''}">${k}</button>`).join(''); }
   $('#issueKpiChips').addEventListener('click', e=>{ const b=e.target.closest('.chip-btn'); if(!b) return; chip(b); });
-
   $('#issueSave').addEventListener('click', ()=>{
     const title=$('#issueTitle').value.trim(); if(!title) return toast('タイトルを入力');
     const issue={
@@ -597,21 +840,30 @@
       area:$('#issueArea').value.trim(),
       evidence:$('#issueEvidence').value.trim(),
       kpis: $$('#issueKpiChips .chip-btn.active').map(b=>b.textContent),
-      impact:3, feasible:3
+      impact:3, feasible:3,
+      communityId: (state.selectedCommunity && $('nav button[aria-current="page"]')?.dataset.target==='community') ? state.selectedCommunity.id : null
     };
-    state.issues.push(issue); state.selectedIssue=issue; renderIssues(); renderMy(); toast('課題カードを保存しました');
+    state.issues.push(issue); state.selectedIssue=issue;
+    renderIssues(); renderMy(); toast('課題カードを保存しました');
     $('#issueModal').removeAttribute('open');
-    // navigate to Issues tab
-    document.querySelector('nav button[data-target="issues"]').click();
-  })
+    if(issue.communityId){ 
+      renderCommunityIssues(); 
+      navigate('community');
+      // 課題カードタブを表示
+      $$('#commDetailTabs .pill').forEach(p=>p.removeAttribute('aria-selected'));
+      $('#commDetailTabs .pill[data-tab="issues"]').setAttribute('aria-selected','true');
+      $$('.comm-tab-content').forEach(tab=>tab.hidden = true);
+      $('#commIssuesTab').hidden = false;
+    }
+    else { document.querySelector('nav button[data-target="issues"]').click(); }
+  });
 
   // ------------------ Hypothesis Builder ------------------
   function openHypWith(issue){
     $('#hypIssue').textContent = `${issue.title}（対象：${issue.target||'未設定'}）`;
     $('#hypText').value='';
     renderKpiChips($('#hypKpiChips'), issue.kpis.length? issue.kpis : ["平均所要時間(分)","満足度(点)"], issue.kpis);
-    $('#hypKpiAdd').value='';
-    $('#hypDataSrc').selectedIndex=0;
+    $('#hypKpiAdd').value=''; $('#hypDataSrc').selectedIndex=0;
     openModal('#hypModal');
   }
   $('#hypKpiChips').addEventListener('click', e=>{ const b=e.target.closest('.chip-btn'); if(!b) return; chip(b); });
@@ -619,7 +871,6 @@
     const issue = state.selectedIssue; if(!issue) return;
     const hyp = $('#hypText').value.trim() || '仮説（モック）';
     const kpis = [ ...new Set([ ...$$('#hypKpiChips .chip-btn.active').map(b=>b.textContent), $('#hypKpiAdd').value.trim() ].filter(Boolean)) ];
-    // create 1 KPI card for MVP（最初のKPIだけ）
     if(!kpis.length) { toast('KPIを選ぶか追加してください'); return; }
     const title = kpis[0];
     const base = Math.round(50+Math.random()*30);
@@ -627,40 +878,94 @@
     state.dashboards.push({ id:'k'+Date.now(), title, unit: title.includes('(% )')? '%' : (title.includes('(分)')?'分':'点'), current:seq[seq.length-1], target: Math.round(base+10), data:seq, note:hyp });
     renderDashboard(); $('#hypModal').removeAttribute('open'); toast('MVPダッシュボードを追加しました');
     document.querySelector('nav button[data-target="dash"]').click();
-  })
+  });
 
   // ------------------ My Page ------------------
   function renderMy(){
     const wrap = $('#myComms'); wrap.innerHTML = state.myCommunities.map(n=>`<span class="tag">${n}</span>`).join('') || '<span class="muted">未参加</span>';
-    $('#myIssues').innerHTML = state.issues.slice(-5).map(i=>`<div class="card"><div class="row" style="justify-content:space-between"><div><div>${i.title}</div><div class="muted">KPI: ${i.kpis.join('、')||'-'}</div></div><button class="btn" data-open-hyp="${i.id}">仮説へ</button></div></div>`).join('');
+    $('#myIssues').innerHTML = state.issues.slice(-5).map(i=>{
+      const cName=(state.communities.find(c=>c.id===i.communityId)||{}).name || '未所属';
+      return `<div class="card"><div class="row" style="justify-content:space-between">
+        <div><div>${i.title}</div><div class="muted">コミュ：${cName}｜KPI: ${i.kpis.join('、')||'-'}</div></div>
+        <button class="btn" data-open-hyp="${i.id}">仮説へ</button></div></div>`;
+    }).join('');
     $('#badgeCount').textContent = state.badges;
   }
   $('#myIssues').addEventListener('click', (e)=>{
     const b=e.target.closest('button[data-open-hyp]'); if(!b) return; const it=state.issues.find(x=>x.id===b.dataset.openHyp); state.selectedIssue=it; openHypWith(it);
-  })
-
-
-
-  // ------------------ Modal close (scrim/btn) ------------------
-  $$('.modal [data-close]').forEach(el=> el.addEventListener('click', closeModal));
-  
-  // ESCキーでモーダルを閉じる
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      const openModal = document.querySelector('.modal[open]');
-      if (openModal) {
-        closeModal({ target: openModal });
-      }
-    }
   });
 
+  // ------------------ Modal close ------------------
+  $$('.modal [data-close]').forEach(el=> el.addEventListener('click', closeModal));
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { const openM = document.querySelector('.modal[open]'); if (openM) closeModal({ target: openM }); } });
+
   // ------------------ Init ------------------
+  // ニュースJSON（提供データ）
+  const providedNews = [
+    {
+      "タイトル": "赤ちゃん・ふらっと",
+      "対象者": "小さな子どもを連れた方",
+      "対象者ラベル": ["未就学児","保護者"],
+      "条件・申し込み方法": "なし",
+      "サービス内容": "授乳スペース、ミルクのお湯の提供、おむつ替え、手洗い場、冷暖房完備など。実施場所は「とうきょう子育てスイッチ」から。",
+      "サービスラベル": ["子育て・教育","福祉・介護"],
+      "公開日": "令和7年2月18日",
+      "URL": {"items": "https://www.city.kokubunji.tokyo.jp/kurashi/1008608/1008667/1001093.html"}
+    },
+    {
+      "タイトル": "児童館・学童保育所のご利用でお困りのときは",
+      "対象者": "児童館・学童保育所をご利用になる方",
+      "対象者ラベル": ["未就学児","小学生","保護者"],
+      "条件・申し込み方法": "なし",
+      "サービス内容": "児童館・学童保育所の苦情解決窓口、第三者委員制度のご案内",
+      "サービスラベル": ["子育て・教育","福祉・介護"],
+      "公開日": "令和6年10月24日",
+      "URL": {"items": "https://www.city.kokubunji.tokyo.jp/kurashi/1008608/jidoukan/1029708.html"}
+    },
+    {
+      "タイトル": "ショートステイ（子育て短期支援事業）",
+      "対象者": "国分寺市にお住いの2歳から義務教育終了までの子ども",
+      "対象者ラベル": ["未就学児","小学生","中学生","保護者"],
+      "条件・申し込み方法": "事前申込みが必要、利用料は免除規定あり",
+      "サービス内容": "ショートステイ先で子どもの養育を支援するサービス。日帰りや宿泊が可能で、就学している子は通学もできる。",
+      "サービスラベル": ["子育て・教育","福祉・介護"],
+      "公開日": "令和3年5月7日",
+      "URL": {"items": "https://www.city.kokubunji.tokyo.jp/kurashi/1008608/1008670/1018959.html"}
+    },
+    {
+      "タイトル": "学童保育所における障害児保育",
+      "対象者": "国分寺市内に住所を有する小学1年生から中学3年生の児童で身体障害者手帳、愛の手帳または精神障害者保健福祉手帳が交付されている児童、都立特別支援学校に就学する児童、特別支援学級に就学する児童、発達障害のある児童",
+      "対象者ラベル": ["小学生","中学生","障がい者"],
+      "条件・申し込み方法": "保護者の就労・疾病その他の理由により昼間適切な監護が受けられない児童であること、ある程度集団に馴染むことが可能であると認められること、一人で通所できるか、保護者またはそれに代わる者が送迎できること",
+      "サービス内容": "学童保育所での保育、入所希望学童保育所を第一希望から第三希望まで選んで申請する必要がある。中学生障害児の受入施設は、児童館併設の「第一光町学童保育所」、「第一泉町学童保育所」、「第一新町学童保育所」、「第一本多学童保育所」",
+      "サービスラベル": ["子育て・教育","福祉・介護"],
+      "公开日": "令和6年7月29日",
+      "URL": {"items": "https://www.city.kokubunji.tokyo.jp/kurashi/1008608/1008673/1001413.html"}
+    }
+  ];
+  // 変換してstate.newsに格納（タグは対象者ラベル＋サービスラベル）
+  state.news = providedNews.map((n, idx)=>{
+    const tagA = Array.isArray(n.対象者ラベル)? n.対象者ラベル : [];
+    const tagS = Array.isArray(n.サービスラベル)? n.サービスラベル : [];
+    const tags = [...tagA, ...tagS].map(s=>String(s).replace(/・/g,'/'));
+    return {
+      id: idx+1,
+      title: n.タイトル,
+      summary: n.サービス内容 || n.対象者 || n.タイトル,
+      audience: n.対象者,
+      apply: n['条件・申し込み方法'] || n['条件・申込み方法'] || n['条件・申込'] || '',
+      tags,
+      url: n.URL?.items
+    };
+  });
+
   renderNews();
   renderCommunities();
   renderIssues();
   renderDashboard();
   renderMy();
+
+  navigate('news');
 </script>
 </body>
 </html>
-
