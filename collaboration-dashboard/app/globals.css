@@ -1,0 +1,7 @@
+@import "tailwindcss";
+
+@layer components {
+  .btn { @apply h-10 px-3 rounded-xl border text-sm; }
+  .btn-primary { @apply btn bg-sky-700 text-white border-sky-700; }
+  .btn-ghost { @apply btn bg-transparent text-slate-600 border-slate-300; }
+}

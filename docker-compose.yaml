@@ -1,11 +1,11 @@
 version: "3.9"
 
 services:
-  frontend:
-    build: ./frontend
-    container_name: shibuya-demo-frontend
+  collaboration-dashboard:
+    build: ./collaboration-dashboard
+    container_name: collaboration-dashboard
     ports:
-      - "8080:80"
+      - "3000:3000"
     depends_on:
       - api
 
