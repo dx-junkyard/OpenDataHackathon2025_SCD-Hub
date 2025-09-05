@@ -1,14 +1,22 @@
-'use client';
-import { useAppStore } from '@/_store/useAppStore';
-import { ThreadList } from '@/_components/community/ThreadList';
-import { IssueList } from '@/_components/issue/IssueList';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useState } from 'react';
+"use client";
+import { useAppStore } from "@/_store/useAppStore";
+import { ThreadList } from "@/_components/community/ThreadList";
+import { IssueList } from "@/_components/issue/IssueList";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useState } from "react";
 
 export default function CommunityPage() {
+  return (
+    <Suspense fallback={<div className="p-4">Loading...</div>}>
+      <CommunityContent />
+    </Suspense>
+  );
+}
+
+function CommunityContent() {
   const router = useRouter();
   const params = useSearchParams();
-  const tab = params.get('tab') || 'threads';
+  const tab = params.get("tab") || "threads";
   const community = useAppStore((s) => s.selectedCommunity);
   const openThread = useAppStore((s) => s.openThread);
   const addThread = useAppStore((s) => s.addThread);
@@ -17,12 +25,12 @@ export default function CommunityPage() {
   const messages = useAppStore((s) =>
     s.selectedThreadId ? s.messages[s.selectedThreadId] || [] : []
   );
-  const [threadTitle, setThreadTitle] = useState('');
-  const [threadMsg, setThreadMsg] = useState('');
-  const [msgText, setMsgText] = useState('');
+  const [threadTitle, setThreadTitle] = useState("");
+  const [threadMsg, setThreadMsg] = useState("");
+  const [msgText, setMsgText] = useState("");
 
   if (!community) {
-    router.push('/community/join');
+    router.push("/community/join");
     return null;
   }
 
@@ -32,14 +40,14 @@ export default function CommunityPage() {
     if (!threadTitle) return;
     const id = addThread(community.id, threadTitle, threadMsg);
     openThread(id);
-    setThreadTitle('');
-    setThreadMsg('');
+    setThreadTitle("");
+    setThreadMsg("");
   };
 
   const handleSend = () => {
     if (selectedThreadId && msgText) {
       addMessage(selectedThreadId, msgText);
-      setMsgText('');
+      setMsgText("");
     }
   };
 
@@ -47,19 +55,19 @@ export default function CommunityPage() {
     <main className="p-4">
       <div className="flex gap-2 mb-4">
         <button
-          className={`btn ${tab === 'threads' ? 'btn-primary' : 'btn-ghost'}`}
-          onClick={() => handleTab('threads')}
+          className={`btn ${tab === "threads" ? "btn-primary" : "btn-ghost"}`}
+          onClick={() => handleTab("threads")}
         >
           スレッド
         </button>
         <button
-          className={`btn ${tab === 'issues' ? 'btn-primary' : 'btn-ghost'}`}
-          onClick={() => handleTab('issues')}
+          className={`btn ${tab === "issues" ? "btn-primary" : "btn-ghost"}`}
+          onClick={() => handleTab("issues")}
         >
           課題
         </button>
       </div>
-      {tab === 'threads' ? (
+      {tab === "threads" ? (
         <div>
           <ThreadList communityId={community.id} onOpen={openThread} />
           <div className="mt-4 space-y-2">
