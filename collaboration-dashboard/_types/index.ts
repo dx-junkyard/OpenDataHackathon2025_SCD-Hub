@@ -17,6 +17,7 @@ export type Issue = {
   title: string;
   target?: string;
   area?: string;
+  detail?: string;
   evidence?: string;
   kpis: string[];
   impact: number;

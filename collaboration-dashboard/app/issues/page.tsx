@@ -11,8 +11,9 @@ export default function IssuesPage() {
     title: '',
     target: '',
     area: '',
+    detail: '',
     evidence: '',
-    kpi: '',
+    kpis: [] as string[],
     impact: 1,
     feasible: 1
   });
@@ -23,13 +24,14 @@ export default function IssuesPage() {
       title: form.title,
       target: form.target,
       area: form.area,
+      detail: form.detail,
       evidence: form.evidence,
-      kpis: form.kpi ? [form.kpi] : [],
+      kpis: form.kpis,
       impact: form.impact,
       feasible: form.feasible,
       communityId: null
     });
-    setForm({ title: '', target: '', area: '', evidence: '', kpi: '', impact: 1, feasible: 1 });
+    setForm({ title: '', target: '', area: '', detail: '', evidence: '', kpis: [], impact: 1, feasible: 1 });
     setOpen(false);
   };
   return (
@@ -59,37 +61,40 @@ export default function IssuesPage() {
             placeholder="エリア"
             className="w-full border rounded p-2"
           />
+          <textarea
+            value={form.detail}
+            onChange={(e) => setForm({ ...form, detail: e.target.value })}
+            placeholder="課題の詳細"
+            rows={2}
+            className="w-full border rounded p-2"
+          />
           <input
             value={form.evidence}
             onChange={(e) => setForm({ ...form, evidence: e.target.value })}
             placeholder="証拠"
             className="w-full border rounded p-2"
           />
-          <input
-            value={form.kpi}
-            onChange={(e) => setForm({ ...form, kpi: e.target.value })}
-            placeholder="KPI"
-            className="w-full border rounded p-2"
-          />
-          <div className="flex gap-2">
-            <input
-              type="number"
-              min={1}
-              max={5}
-              value={form.impact}
-              onChange={(e) => setForm({ ...form, impact: Number(e.target.value) })}
-              className="border rounded p-2 w-full"
-              placeholder="Impact"
-            />
-            <input
-              type="number"
-              min={1}
-              max={5}
-              value={form.feasible}
-              onChange={(e) => setForm({ ...form, feasible: Number(e.target.value) })}
-              className="border rounded p-2 w-full"
-              placeholder="Feasible"
-            />
+          <div>
+            <div className="font-semibold">KPI</div>
+            <div className="flex gap-2 mt-1">
+              {['平均所要時間(分)', '満足度(点)'].map((k) => (
+                <button
+                  key={k}
+                  type="button"
+                  className={`chip-btn ${form.kpis.includes(k) ? 'active' : ''}`}
+                  onClick={() =>
+                    setForm((prev) => ({
+                      ...prev,
+                      kpis: prev.kpis.includes(k)
+                        ? prev.kpis.filter((x) => x !== k)
+                        : [...prev.kpis, k]
+                    }))
+                  }
+                >
+                  {k}
+                </button>
+              ))}
+            </div>
           </div>
           <button className="btn btn-primary w-full" onClick={handleSubmit}>
             課題カード作成

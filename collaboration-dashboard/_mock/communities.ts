@@ -20,6 +20,7 @@ export const issues: Issue[] = [
     title: 'ゴミのポイ捨て',
     target: '駅前',
     area: '市内',
+    detail: '',
     evidence: '写真',
     kpis: ['清掃回数'],
     impact: 3,
