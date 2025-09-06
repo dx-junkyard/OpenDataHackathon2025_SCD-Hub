@@ -3,8 +3,11 @@ import { useState } from 'react';
 import { IssueList } from '@/_components/issue/IssueList';
 import { useAppStore } from '@/_store/useAppStore';
 import { Dialog } from '@/_components/ui/Dialog';
+import { useRouter } from 'next/navigation';
 
 export default function IssuesPage() {
+  const router = useRouter();
+  const community = useAppStore((s) => s.selectedCommunity);
   const saveIssue = useAppStore((s) => s.saveIssue);
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({
@@ -17,8 +20,13 @@ export default function IssuesPage() {
     impact: 1,
     feasible: 1
   });
+  if (!community) {
+    router.push('/community');
+    return null;
+  }
+
   const handleSubmit = () => {
-    if (!form.title) return;
+    if (!form.title || !community) return;
     saveIssue({
       id: `i${Date.now()}`,
       title: form.title,
@@ -29,15 +37,17 @@ export default function IssuesPage() {
       kpis: form.kpis,
       impact: form.impact,
       feasible: form.feasible,
-      communityId: null
+      communityId: community.id
     });
     setForm({ title: '', target: '', area: '', detail: '', evidence: '', kpis: [], impact: 1, feasible: 1 });
     setOpen(false);
   };
+  if (!community) return null;
+
   return (
     <main className="p-4">
-      <h1 className="text-lg font-semibold mb-4">課題</h1>
-      <IssueList />
+      <h1 className="text-lg font-semibold mb-4">課題 - {community.name}</h1>
+      <IssueList communityId={community.id} />
       <button className="btn btn-primary mt-4" onClick={() => setOpen(true)}>
         新規課題作成
       </button>

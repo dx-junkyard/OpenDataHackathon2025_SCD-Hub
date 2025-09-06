@@ -8,10 +8,8 @@ export default function JoinPage() {
   const join = (id: string) => {
     const community = useAppStore.getState().communities.find((c) => c.id === id);
     if (!community) return;
-    useAppStore.setState((s) => ({
-      myCommunities: [...s.myCommunities, id],
-      selectedCommunity: community
-    }));
+    useAppStore.getState().joinCommunity(id);
+    useAppStore.getState().selectCommunity(community);
     router.push('/community');
   };
   return (

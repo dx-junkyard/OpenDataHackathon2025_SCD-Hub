@@ -13,6 +13,8 @@ type AppState = {
   issues: Issue[];
   dashboards: DashboardKpi[];
   selectCommunity: (c: Community) => void;
+  joinCommunity: (id: string) => void;
+  leaveCommunity: (id: string) => void;
   openThread: (id: string) => void;
   addThread: (communityId: string, title: string, firstMessage?: string) => string;
   addMessage: (threadId: string, text: string) => void;
@@ -22,7 +24,22 @@ type AppState = {
 
 export const useAppStore = create<AppState>((set) => ({
   ...initialState,
-  selectCommunity: (c) => set({ selectedCommunity: c }),
+  selectCommunity: (c) =>
+    set((s) => ({
+      selectedCommunity: c,
+      myCommunities: [c.id, ...s.myCommunities.filter((id) => id !== c.id)]
+    })),
+  joinCommunity: (id) =>
+    set((s) =>
+      s.myCommunities.includes(id)
+        ? {}
+        : { myCommunities: [...s.myCommunities, id] }
+    ),
+  leaveCommunity: (id) =>
+    set((s) => ({
+      myCommunities: s.myCommunities.filter((cid) => cid !== id),
+      selectedCommunity: s.selectedCommunity?.id === id ? null : s.selectedCommunity
+    })),
   openThread: (id) => set({ selectedThreadId: id }),
   addThread: (communityId, title, firstMessage) => {
     const id = `t${Date.now()}`;
