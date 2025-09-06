@@ -14,9 +14,9 @@ const items = [
 export function BottomNav() {
   const path = usePathname();
   return (
-    <nav className="fixed bottom-0 inset-x-0 bg-white border-t flex justify-around py-2">
+    <nav className="fixed bottom-0 inset-x-0 bg-white/90 backdrop-blur border-t border-slate-200 flex justify-around py-2">
       {items.map((it) => (
-        <Link key={it.href} href={it.href} className={`text-sm ${path.startsWith(it.href) ? 'text-sky-700' : 'text-slate-600'}`}>
+        <Link key={it.href} href={it.href} className={`text-sm ${path.startsWith(it.href) ? 'text-primary' : 'text-slate-600'}`}>
           {it.label}
         </Link>
       ))}
