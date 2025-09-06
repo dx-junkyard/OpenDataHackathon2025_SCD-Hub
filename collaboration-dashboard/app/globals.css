@@ -12,4 +12,17 @@
   .btn { @apply h-10 px-3 rounded-xl border text-sm bg-white text-slate-700 border-slate-300; }
   .btn-primary { @apply h-10 px-3 rounded-xl border text-sm bg-primary text-white border-primary; }
   .btn-ghost { @apply h-10 px-3 rounded-xl border text-sm bg-transparent text-slate-600 border-slate-300; }
+  .chip-btn {
+    padding: 6px 10px;
+    border-radius: 999px;
+    border: 1px solid #cbd5e1;
+    background: #f8fafc;
+    color: #475569;
+    font-size: 12px;
+  }
+  .chip-btn.active {
+    border-color: #0891b2;
+    background: #0891b2;
+    color: #ffffff;
+  }
 }
