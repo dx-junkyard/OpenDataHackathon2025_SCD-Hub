@@ -43,11 +43,11 @@ export default function NewsPage() {
             <p>{detail.summary}</p>
             {detail.audience && <p>対象: {detail.audience}</p>}
             {detail.apply && <p>申込: {detail.apply}</p>}
-            {detail.url && (
-              <a href={detail.url} className="text-sky-700 underline">
-                リンク
-              </a>
-            )}
+              {detail.url && (
+                <a href={detail.url} className="text-primary underline">
+                  リンク
+                </a>
+              )}
             <div className="mt-4 border-t pt-4">
               <h3 className="font-semibold mb-2">AIとチャット</h3>
               <div className="space-y-1 max-h-32 overflow-y-auto text-sm p-2 border rounded bg-slate-50">
