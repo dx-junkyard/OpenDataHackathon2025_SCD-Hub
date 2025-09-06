@@ -25,21 +25,28 @@ type AppState = {
 export const useAppStore = create<AppState>((set) => ({
   ...initialState,
   selectCommunity: (c) =>
-    set((s) => ({
-      selectedCommunity: c,
-      myCommunities: [c.id, ...s.myCommunities.filter((id) => id !== c.id)]
-    })),
+    set((s) => {
+      console.log('selectCommunity', c.id);
+      return {
+        selectedCommunity: c,
+        myCommunities: [c.id, ...s.myCommunities.filter((id) => id !== c.id)]
+      };
+    }),
   joinCommunity: (id) =>
-    set((s) =>
-      s.myCommunities.includes(id)
+    set((s) => {
+      console.log('joinCommunity', id);
+      return s.myCommunities.includes(id)
         ? {}
-        : { myCommunities: [...s.myCommunities, id] }
-    ),
+        : { myCommunities: [...s.myCommunities, id] };
+    }),
   leaveCommunity: (id) =>
-    set((s) => ({
-      myCommunities: s.myCommunities.filter((cid) => cid !== id),
-      selectedCommunity: s.selectedCommunity?.id === id ? null : s.selectedCommunity
-    })),
+    set((s) => {
+      console.log('leaveCommunity', id);
+      return {
+        myCommunities: s.myCommunities.filter((cid) => cid !== id),
+        selectedCommunity: s.selectedCommunity?.id === id ? null : s.selectedCommunity
+      };
+    }),
   openThread: (id) => set({ selectedThreadId: id }),
   addThread: (communityId, title, firstMessage) => {
     const id = `t${Date.now()}`;

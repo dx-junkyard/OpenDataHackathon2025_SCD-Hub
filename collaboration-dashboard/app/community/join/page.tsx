@@ -6,11 +6,20 @@ import { useRouter } from 'next/navigation';
 export default function JoinPage() {
   const router = useRouter();
   const join = (id: string) => {
-    const community = useAppStore.getState().communities.find((c) => c.id === id);
-    if (!community) return;
-    useAppStore.getState().joinCommunity(id);
-    useAppStore.getState().selectCommunity(community);
-    router.push('/community');
+    try {
+      console.log('join button clicked', id);
+      const store = useAppStore.getState();
+      const community = store.communities.find((c) => c.id === id);
+      if (!community) {
+        console.error('join failed: community not found', id);
+        return;
+      }
+      store.joinCommunity(id);
+      store.selectCommunity(community);
+      router.push('/community');
+    } catch (err) {
+      console.error('join failed', err);
+    }
   };
   return (
     <main className="p-4">
