@@ -2,6 +2,7 @@
 import { useAppStore } from "@/_store/useAppStore";
 import { ThreadList } from "@/_components/community/ThreadList";
 import { IssueList } from "@/_components/issue/IssueList";
+import { MyCommunityList } from "@/_components/community/MyCommunityList";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
 
@@ -18,6 +19,7 @@ function CommunityContent() {
   const params = useSearchParams();
   const tab = params.get("tab") || "threads";
   const community = useAppStore((s) => s.selectedCommunity);
+  const selectCommunity = useAppStore((s) => s.selectCommunity);
   const openThread = useAppStore((s) => s.openThread);
   const addThread = useAppStore((s) => s.addThread);
   const addMessage = useAppStore((s) => s.addMessage);
@@ -30,8 +32,11 @@ function CommunityContent() {
   const [msgText, setMsgText] = useState("");
 
   if (!community) {
-    router.push("/community/join");
-    return null;
+    return (
+      <main className="p-4">
+        <MyCommunityList onSelect={selectCommunity} />
+      </main>
+    );
   }
 
   const handleTab = (t: string) => router.push(`/community?tab=${t}`);
@@ -53,6 +58,9 @@ function CommunityContent() {
 
   return (
     <main className="p-4">
+      <button className="btn btn-ghost mb-4" onClick={() => selectCommunity(null)}>
+        戻る
+      </button>
       <div className="flex gap-2 mb-4">
         <button
           className={`btn ${tab === "threads" ? "btn-primary" : "btn-ghost"}`}
