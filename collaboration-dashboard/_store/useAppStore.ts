@@ -22,7 +22,7 @@ type AppState = {
 
 export const useAppStore = create<AppState>((set) => ({
   ...initialState,
-  selectCommunity: (c) => set({ selectedCommunity: c }),
+  selectCommunity: (c) => set({ selectedCommunity: c, selectedThreadId: null }),
   openThread: (id) => set({ selectedThreadId: id }),
   addThread: (communityId, title, firstMessage) => {
     const id = `t${Date.now()}`;

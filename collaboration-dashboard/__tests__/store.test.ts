@@ -27,4 +27,12 @@ describe('store actions', () => {
     });
     expect(useAppStore.getState().issues.length).toBe(count + 1);
   });
+
+  test('selectCommunity resets selectedThreadId', () => {
+    const { openThread, selectCommunity, communities } = useAppStore.getState();
+    openThread('t1');
+    expect(useAppStore.getState().selectedThreadId).toBe('t1');
+    selectCommunity(communities[1]);
+    expect(useAppStore.getState().selectedThreadId).toBeNull();
+  });
 });
