@@ -3,7 +3,11 @@ import { useAppStore } from "@/_store/useAppStore";
 import { ThreadList } from "@/_components/community/ThreadList";
 import { IssueList } from "@/_components/issue/IssueList";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useState, useEffect } from "react";
+import { Suspense, useState, useEffect, useRef } from "react";
+import { Message } from "@/_types";
+import { shallow } from "zustand/shallow";
+
+const emptyMessages: Message[] = [];
 
 export default function CommunityPage() {
   return (
@@ -22,12 +26,22 @@ function CommunityContent() {
   const addThread = useAppStore((s) => s.addThread);
   const addMessage = useAppStore((s) => s.addMessage);
   const selectedThreadId = useAppStore((s) => s.selectedThreadId);
-  const messages = useAppStore((s) =>
-    s.selectedThreadId ? s.messages[s.selectedThreadId] || [] : []
+  const messages = useAppStore(
+    (s) =>
+      s.selectedThreadId
+        ? s.messages[s.selectedThreadId] || emptyMessages
+        : emptyMessages,
+    shallow
   );
   const [threadTitle, setThreadTitle] = useState("");
   const [threadMsg, setThreadMsg] = useState("");
   const [msgText, setMsgText] = useState("");
+
+  const prev = useRef<Message[] | undefined>();
+  useEffect(() => {
+    console.log("messages changed", prev.current === messages, messages);
+    prev.current = messages;
+  }, [messages]);
 
   console.log('CommunityContent render', { community });
 
