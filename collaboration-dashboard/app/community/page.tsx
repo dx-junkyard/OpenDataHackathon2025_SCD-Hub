@@ -3,7 +3,7 @@ import { useAppStore } from "@/_store/useAppStore";
 import { ThreadList } from "@/_components/community/ThreadList";
 import { IssueList } from "@/_components/issue/IssueList";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useState } from "react";
+import { Suspense, useState, useEffect } from "react";
 
 export default function CommunityPage() {
   return (
@@ -29,10 +29,16 @@ function CommunityContent() {
   const [threadMsg, setThreadMsg] = useState("");
   const [msgText, setMsgText] = useState("");
 
-  if (!community) {
-    router.push("/community/join");
-    return null;
-  }
+  console.log('CommunityContent render', { community });
+
+  useEffect(() => {
+    if (!community) {
+      console.log('Redirecting to /community/join because selectedCommunity is missing');
+      router.push('/community/join');
+    }
+  }, [community, router]);
+
+  if (!community) return null;
 
   const handleTab = (t: string) => router.push(`/community?tab=${t}`);
 

@@ -23,7 +23,7 @@ export default function IssuesPage() {
 
   useEffect(() => {
     if (!community) router.push('/community');
-  }, [community]);
+  }, [community, router]);
 
   if (!community) return null;
 
