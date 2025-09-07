@@ -5,7 +5,7 @@ import { IssueList } from "@/_components/issue/IssueList";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState, useEffect, useRef } from "react";
 import { Message } from "@/_types";
-import { shallow } from "zustand/shallow";
+import { useShallow } from "zustand/react/shallow";
 
 const emptyMessages: Message[] = [];
 
@@ -27,11 +27,11 @@ function CommunityContent() {
   const addMessage = useAppStore((s) => s.addMessage);
   const selectedThreadId = useAppStore((s) => s.selectedThreadId);
   const messages = useAppStore(
-    (s) =>
+    useShallow((s) =>
       s.selectedThreadId
         ? s.messages[s.selectedThreadId] || emptyMessages
-        : emptyMessages,
-    shallow
+        : emptyMessages
+    )
   );
   const [threadTitle, setThreadTitle] = useState("");
   const [threadMsg, setThreadMsg] = useState("");
