@@ -12,7 +12,7 @@ type AppState = {
   messages: Record<string, Message[]>;
   issues: Issue[];
   dashboards: DashboardKpi[];
-  selectCommunity: (c: Community) => void;
+  selectCommunity: (c: Community | null) => void;
   openThread: (id: string) => void;
   addThread: (communityId: string, title: string, firstMessage?: string) => string;
   addMessage: (threadId: string, text: string) => void;
