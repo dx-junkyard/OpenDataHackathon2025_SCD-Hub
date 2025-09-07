@@ -7,7 +7,10 @@ import { vi } from 'vitest';
 vi.mock('next/navigation', () => ({ useRouter: () => ({ push: vi.fn() }) }));
 
 test('creating an issue adds to list', () => {
-  useAppStore.setState(initialState);
+  useAppStore.setState({
+    ...initialState,
+    selectedCommunity: initialState.communities[0]
+  });
   render(<IssuesPage />);
   fireEvent.click(screen.getByText('新規課題作成'));
   fireEvent.change(screen.getByPlaceholderText('タイトル'), { target: { value: '新しい課題' } });

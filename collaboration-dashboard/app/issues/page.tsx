@@ -1,10 +1,13 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { IssueList } from '@/_components/issue/IssueList';
 import { useAppStore } from '@/_store/useAppStore';
 import { Dialog } from '@/_components/ui/Dialog';
 
 export default function IssuesPage() {
+  const router = useRouter();
+  const community = useAppStore((s) => s.selectedCommunity);
   const saveIssue = useAppStore((s) => s.saveIssue);
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({
@@ -17,6 +20,13 @@ export default function IssuesPage() {
     impact: 1,
     feasible: 1
   });
+
+  useEffect(() => {
+    if (!community) router.push('/community');
+  }, [community]);
+
+  if (!community) return null;
+
   const handleSubmit = () => {
     if (!form.title) return;
     saveIssue({
