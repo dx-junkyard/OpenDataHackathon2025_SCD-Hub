@@ -37,7 +37,7 @@ function CommunityContent() {
   const [threadMsg, setThreadMsg] = useState("");
   const [msgText, setMsgText] = useState("");
 
-  const prev = useRef<Message[] | undefined>();
+  const prev = useRef<Message[] | undefined>(undefined);
   useEffect(() => {
     console.log("messages changed", prev.current === messages, messages);
     prev.current = messages;
