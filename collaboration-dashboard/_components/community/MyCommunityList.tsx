@@ -2,6 +2,7 @@
 import { useAppStore } from '@/_store/useAppStore';
 import { Card } from '@/_components/ui/Card';
 import { Community } from '@/_types';
+import Link from 'next/link';
 
 export { Card } from '@/_components/ui/Card';
 
@@ -9,6 +10,16 @@ export function MyCommunityList({ onSelect }: { onSelect: (community: Community)
   const communities = useAppStore((s) => s.communities);
   const my = useAppStore((s) => s.myCommunities);
   const list = communities.filter((c) => my.includes(c.id));
+  if (list.length === 0) {
+    return (
+      <div className="mt-4 text-center space-y-2">
+        <div>参加中のコミュニティはありません</div>
+        <Link href="/community/join" className="text-primary underline">
+          コミュニティに参加する
+        </Link>
+      </div>
+    );
+  }
   return (
     <div className="space-y-2 mt-4">
       {list.map((c) => (
