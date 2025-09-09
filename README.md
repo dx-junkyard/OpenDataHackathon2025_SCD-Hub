@@ -21,3 +21,5 @@ Which should return:
 ```json
 {"status": "ok"}
 ```
+
+The collaboration dashboard is available at [http://localhost:3000](http://localhost:3000).
